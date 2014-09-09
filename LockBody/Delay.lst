@@ -1,0 +1,183 @@
+C51 COMPILER V9.51   DELAY                                                                 07/17/2014 13:52:12 PAGE 1   
+
+
+C51 COMPILER V9.51, COMPILATION OF MODULE DELAY
+OBJECT MODULE PLACED IN .\Delay.obj
+COMPILER INVOKED BY: D:\Program Files (x86)\keil\C51\BIN\C51.EXE ..\Library\Delay.c ROM(COMPACT) BROWSE INCDIR(..\Librar
+                    -y) DEBUG OBJECTEXTEND PRINT(.\Delay.lst) OBJECT(.\Delay.obj)
+
+line level    source
+
+   1          /*---------------------------------------------------
+   2                  Delay.c (v1.00)
+   3                  
+   4                  Delay functions
+   5          ---------------------------------------------------*/   
+   6          
+   7          #include "main.h"
+   8          #include "port.h"
+   9          
+  10          #include "Delay.h"
+  11          
+  12          /*---------------------------------------------------
+  13                  Delay()
+  14                  延迟程序
+  15          --------------------------------------------------*/
+  16          
+  17          void Delay(unsigned int n)
+  18          {
+  19   1              unsigned int x;
+  20   1              while(n--)
+  21   1              {
+  22   2                      x=5000;
+  23   2                      while(x--);
+  24   2              }
+  25   1      }
+  26          
+  27          /*---------------------------------------------------
+  28                  Delay3()
+  29                  延迟程序
+  30          --------------------------------------------------*/
+  31          
+  32          void Delay3(unsigned int t)
+  33          {
+  34   1              tWord i;
+  35   1              tByte j;
+  36   1              for(i=0;i<t;i++)                
+  37   1              for(j=0;j<21;j++);
+  38   1      }
+  39          
+  40          /*---------------------------------------------------
+  41                  Delay4()
+  42                  延迟程序
+  43          --------------------------------------------------*/
+  44          
+  45          void Delay4(tWord t)
+  46          {
+  47   1              tWord i;
+  48   1              tByte j;
+  49   1              for(i=0;i<t;i++)                
+  50   1              for(j=0;j<42;j++);
+  51   1      //      for(j=0;j<26;j++);
+  52   1      }
+  53                  
+  54          /*--------------------------------------------------
+C51 COMPILER V9.51   DELAY                                                                 07/17/2014 13:52:12 PAGE 2   
+
+  55                  delay_ms()
+  56                  
+  57                  延迟约为1ms的子程序
+  58          ----------------------------------------------------*/
+  59          
+  60          void delay_ms(tWord count)
+  61          {
+  62   1              tWord i, j;
+  63   1              for(i=0;i<count;i++)
+  64   1              {
+  65   2                      for(j=0;j<100;j++);
+  66   2              }
+  67   1      }
+  68          
+  69          /*--------------------------------------------------
+  70                  delay_us()
+  71                  
+  72                  延迟约为1us的子程序
+  73          ----------------------------------------------------*/
+  74          
+  75          void delay_us(tWord count1)
+  76                  {
+  77   1              tWord i;
+  78   1              tByte j;
+  79   1              for(i=0;i<count1;i++)
+  80   1                      {
+  81   2                      for(j=0;j<4;j++);
+  82   2                      }
+  83   1              }
+  84          
+  85          /*----------------------------------------------------
+  86                  magnet_delay_CW()
+  87                  电磁铁的延迟程序，要在里面加入对过流的判断
+  88          -----------------------------------------------------*/
+  89          void magnet_delay_CW(void)
+  90                  {
+  91   1              tByte i;
+  92   1              tWord j;                                                                                                 
+             -       
+  93   1              for(i = 0; i < 50; i++)
+  94   1                      {
+  95   2                      for(j = 0; j< 4000; j++);
+  96   2                      }
+  97   1              for(i = 0; i < 50; i++)
+  98   1                      {
+  99   2                      if(magnet_overcurrent == 0)
+ 100   2                              {
+ 101   3                              for(j = 0; j< 10000; j++);
+ 102   3                              }
+ 103   2                      else
+ 104   2                              {
+ 105   3                              return;
+ 106   3                              }
+ 107   2                      }
+ 108   1              }
+ 109          
+ 110          /*----------------------------------------------------
+ 111                  magnet_delay_ACW()
+ 112                  电磁铁的延迟程序，要在里面加入对过流的判断
+ 113          -----------------------------------------------------*/
+ 114          void magnet_delay_ACW(void)
+ 115                  {
+C51 COMPILER V9.51   DELAY                                                                 07/17/2014 13:52:12 PAGE 3   
+
+ 116   1              tByte i;
+ 117   1              tWord j;                                                                                                 
+             -       
+ 118   1              for(i = 0; i < 50; i++)
+ 119   1                      {
+ 120   2                      for(j = 0; j< 6000; j++);
+ 121   2                      }
+ 122   1              for(i = 0; i < 50; i++)
+ 123   1                      {
+ 124   2                      if(magnet_overcurrent == 0)
+ 125   2                              {
+ 126   3                              for(j = 0; j< 12000; j++);
+ 127   3                              }
+ 128   2                      else
+ 129   2                              {
+ 130   3                              return;
+ 131   3                              }
+ 132   2                      }
+ 133   1              }
+ 134          
+ 135          /*----------------------------------------------------
+ 136                  magnet_delay_for_Unlock()
+ 137                  电磁铁的延迟程序，要在里面加入对过流的判断
+ 138          -----------------------------------------------------*/
+ 139          void magnet_delay_for_Unlock(void)
+ 140                  {
+ 141   1              tByte i;
+ 142   1              tWord j;                                                                                                 
+             -       
+ 143   1              for(i = 0; i < 50; i++)
+ 144   1                      {
+ 145   2                      for(j = 0; j< 16000; j++);
+ 146   2                      }
+ 147   1              }
+ 148                  
+ 149          
+ 150          /*---------------------------------------------------
+ 151                  end of file
+ 152          ----------------------------------------------------*/
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    240    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

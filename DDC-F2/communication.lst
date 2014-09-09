@@ -1,0 +1,732 @@
+C51 COMPILER V9.51   COMMUNICATION                                                         08/28/2014 15:02:20 PAGE 1   
+
+
+C51 COMPILER V9.51, COMPILATION OF MODULE COMMUNICATION
+OBJECT MODULE PLACED IN .\communication.obj
+COMPILER INVOKED BY: D:\Program Files (x86)\keil\C51\BIN\C51.EXE ..\Library\communication.c BROWSE INCDIR(..\Library) DE
+                    -BUG OBJECTEXTEND PRINT(.\communication.lst) OBJECT(.\communication.obj)
+
+line level    source
+
+   1          /*---------------------------------------------------
+   2                  communication.c (v1.00)
+   3                  
+   4                  通信程序
+   5          ---------------------------------------------------*/   
+   6          
+   7          #include "main.h"
+   8          #include "port.h"
+   9          
+  10          #include "communication.h"
+  11          #include "Delay.h"
+  12          
+  13          /*------ private variable --------------------------*/
+  14          tByte myTxRxData[7]={0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+  15          
+  16          /*------- Public variable declarations --------------------------*/
+  17          extern tByte receive_LV_count;          
+  18          extern bit receive_wire_flag;           
+  19          extern tByte one_receive_byte;          
+  20          extern tByte one_receive_byte_count;                    
+  21          extern tByte receive_HV_count;          
+  22          extern tByte data_count;                                
+  23          extern tByte received_data_buffer[7];           
+  24          extern bit receive_data_finished_flag;          
+  25          
+  26          /*----------------------------------------------------
+  27                  initsignal()
+  28                  
+  29                  初始化信号程序，接收机在接接收信号的时候，需要有
+  30                  一段代码来使接收机打开，而这一段程序有可能无法识别
+  31                  出来，而是相当于废代码，只占用通信时间。
+  32          ----------------------------------------------------*/
+  33          void initsignal()
+  34                  {
+  35   1              tByte k,k1;
+  36   1              tByte mystartbuffer = 0xaa;
+  37   1              for(k1 = 0; k1 < 3; k1++)
+  38   1                      {
+  39   2                      for(k=0;k<8;k++)
+  40   2                              {
+  41   3                              if((mystartbuffer&0x80) == 0x80)//为1
+  42   3                                      {
+  43   4                                      P10=0;
+  44   4                                      Custom_Delay(23, 21);
+  45   4                                      }
+  46   3                              else
+  47   3                                      {
+  48   4                                      P10=0;
+  49   4                                      Custom_Delay(23, 21);
+  50   4                                      }
+  51   3                              P10=1;
+  52   3                              mystartbuffer<<=1;
+  53   3                              Custom_Delay(43, 21);
+  54   3                              }
+C51 COMPILER V9.51   COMMUNICATION                                                         08/28/2014 15:02:20 PAGE 2   
+
+  55   2                      mystartbuffer=0xaa;
+  56   2                      Custom_Delay(23, 21);
+  57   2                      }
+  58   1              P10=1;
+  59   1              }
+  60          
+  61          /*--------------------------------------------------
+  62                  Send_Data()
+  63                  将数据发送出去
+  64          --------------------------------------------------*/
+  65          void Send_Data(tByte x)
+  66                  {
+  67   1              tByte i,n;
+  68   1              for(i=0;i<3;i++)
+  69   1                      {
+  70   2                      for(n=0;n<8;n++)
+  71   2                              {
+  72   3                              if((myTxRxData[i]&0x80)==0x80)
+  73   3                                      {
+  74   4                                      P10=0;
+  75   4                                      Custom_Delay(36, x);
+  76   4                                      }
+  77   3                              else
+  78   3                                      {
+  79   4                                      P10=0;
+  80   4                                      Custom_Delay(23, x);
+  81   4                                      }
+  82   3                              P10=1;
+  83   3                              myTxRxData[i]<<=1;
+  84   3                              Custom_Delay(15, x);
+  85   3                              }
+  86   2                      }       
+  87   1              }
+  88          
+  89          /*--------------------------------------------------
+  90                  ComMode_Data()
+  91                  
+  92                  主机接收到编码1信号后，会反馈一个编码1信号给附机
+  93                  以表示主机在附机附近。
+  94          ---------------------------------------------------*/
+  95          void ComMode_Data(tByte ComMode, x)     
+  96                  {
+  97   1              receiver_EN = 1;
+  98   1              transmiter_power = 1;                           
+  99   1              transmiter_EN = 0;
+ 100   1              myTxRxData[0] = CmdHead;
+ 101   1              myTxRxData[1] = MyAddress;
+ 102   1              myTxRxData[2] = ComMode;
+ 103   1      
+ 104   1              initsignal();
+ 105   1          Send_Data(x);
+ 106   1              
+ 107   1              transmiter_EN = 1;
+ 108   1              receiver_EN = 0;
+ 109   1              transmiter_power = 1;                           
+ 110   1              }
+ 111          
+ 112          /*--------------------------------------------------
+ 113                  ComMode_1_Data_F2()
+ 114                  
+ 115                  用于F2，无线认证用，发送编码1，给主机进行认证
+ 116          ---------------------------------------------------*/
+C51 COMPILER V9.51   COMMUNICATION                                                         08/28/2014 15:02:20 PAGE 3   
+
+ 117          
+ 118          void ComMode_1_Data_F2()        
+ 119                  {
+ 120   1              transmiter_EN = 0;
+ 121   1              myTxRxData[0]=CmdHead;
+ 122   1              myTxRxData[1]=MyAddress;
+ 123   1              myTxRxData[2]=ComMode_1;
+ 124   1              
+ 125   1              initsignal();
+ 126   1      
+ 127   1          Send_Data(42);
+ 128   1              transmiter_EN = 0;
+ 129   1              }
+ 130          
+ 131          /*--------------------------------------------------
+ 132                  ComMode_2_Data()
+ 133                  when battery is stolen, transmit this code to slave. 
+ 134          ---------------------------------------------------*/
+ 135          
+ 136          void ComMode_2_Data()   
+ 137          {
+ 138   1              receiver_EN = 1;
+ 139   1              transmiter_power = 0;                           
+ 140   1              transmiter_EN = 0;
+ 141   1              myTxRxData[0]=CmdHead;
+ 142   1              myTxRxData[1]=MyAddress;
+ 143   1              myTxRxData[2]=ComMode_2;
+ 144   1      /*      myTxRxData[3]=0x00;
+ 145   1              myTxRxData[4]=0x00;
+ 146   1              myTxRxData[5]=0x00;
+ 147   1              myTxRxData[6]=0x00;
+ 148   1      */
+ 149   1              initsignal();
+ 150   1      
+ 151   1          Send_Data(42);
+ 152   1              transmiter_EN = 1;
+ 153   1              transmiter_power = 1;                           
+ 154   1              receiver_EN = 0;
+ 155   1      }
+ 156          /*--------------------------------------------------
+ 157                  ComMode_2_Data_Z4()
+ 158                  when battery is stolen, transmit this code to slave. 
+ 159          ---------------------------------------------------*/
+ 160          
+ 161          void ComMode_2_Data_Z4()        
+ 162          {
+ 163   1              receiver_EN = 1;
+ 164   1              transmiter_power = 0;                           
+ 165   1              transmiter_EN = 0;
+ 166   1              myTxRxData[0]=CmdHead;
+ 167   1              myTxRxData[1]=MyAddress;
+ 168   1              myTxRxData[2]=ComMode_2;
+ 169   1      /*      myTxRxData[3]=0x00;
+ 170   1              myTxRxData[4]=0x00;
+ 171   1              myTxRxData[5]=0x00;
+ 172   1              myTxRxData[6]=0x00;
+ 173   1      */
+ 174   1              initsignal();
+ 175   1      
+ 176   1              Send_Data(28);
+ 177   1              transmiter_EN = 1;
+ 178   1              transmiter_power = 1;                           
+C51 COMPILER V9.51   COMMUNICATION                                                         08/28/2014 15:02:20 PAGE 4   
+
+ 179   1              receiver_EN = 0;
+ 180   1      }
+ 181          
+ 182          /*----------------------------------------------------------
+ 183                  ComMode_3_Data()
+ 184                  
+ 185                  被盗报警信号，让附机语音提示“电动车被盗“
+ 186          ----------------------------------------------------------*/
+ 187          
+ 188          void ComMode_3_Data()
+ 189          {
+ 190   1              receiver_EN = 1;
+ 191   1              transmiter_power = 0;
+ 192   1              transmiter_EN = 0;
+ 193   1              myTxRxData[0]=CmdHead;
+ 194   1              myTxRxData[1]=MyAddress;
+ 195   1              myTxRxData[2]=ComMode_3;
+ 196   1      /*      myTxRxData[3]=0x00;
+ 197   1              myTxRxData[4]=0x00;
+ 198   1              myTxRxData[5]=0x00;
+ 199   1              myTxRxData[6]=0x00;
+ 200   1      */
+ 201   1              initsignal();
+ 202   1      
+ 203   1          Send_Data(42);
+ 204   1              transmiter_EN = 1;
+ 205   1              transmiter_power = 1;
+ 206   1              receiver_EN = 0;
+ 207   1      }
+ 208          /*----------------------------------------------------------
+ 209                  ComMode_3_Data_Z4()
+ 210                  
+ 211                  被盗报警信号，让附机语音提示“电动车被盗“
+ 212          ----------------------------------------------------------*/
+ 213          
+ 214          void ComMode_3_Data_Z4()
+ 215          {
+ 216   1              receiver_EN = 1;
+ 217   1              transmiter_power = 0;
+ 218   1              transmiter_EN = 0;
+ 219   1              myTxRxData[0]=CmdHead;
+ 220   1              myTxRxData[1]=MyAddress;
+ 221   1              myTxRxData[2]=ComMode_3;
+ 222   1      /*      myTxRxData[3]=0x00;
+ 223   1              myTxRxData[4]=0x00;
+ 224   1              myTxRxData[5]=0x00;
+ 225   1              myTxRxData[6]=0x00;
+ 226   1      */
+ 227   1              initsignal();
+ 228   1      
+ 229   1              Send_Data(28);
+ 230   1              transmiter_EN = 1;
+ 231   1              transmiter_power = 1;
+ 232   1              receiver_EN = 0;
+ 233   1      }
+ 234          
+ 235          /*--------------------------------------------------------
+ 236                  ComMode_4_Data()
+ 237                  
+ 238                  发信号给附机，让其语音提示“电动车被抬起”
+ 239          ---------------------------------------------------------*/
+ 240          
+C51 COMPILER V9.51   COMMUNICATION                                                         08/28/2014 15:02:20 PAGE 5   
+
+ 241          void ComMode_4_Data()//发送抬起编码
+ 242          {
+ 243   1              receiver_EN = 1;
+ 244   1              transmiter_power = 0;
+ 245   1              transmiter_EN = 0;
+ 246   1              myTxRxData[0]=CmdHead;
+ 247   1              myTxRxData[1]=MyAddress;
+ 248   1              myTxRxData[2]=ComMode_4;
+ 249   1      /*      myTxRxData[3]=0x00;
+ 250   1              myTxRxData[4]=0x00;
+ 251   1              myTxRxData[5]=0x00;
+ 252   1              myTxRxData[6]=0x00;
+ 253   1      */
+ 254   1              initsignal();
+ 255   1      
+ 256   1          Send_Data(42);
+ 257   1              transmiter_EN = 1;
+ 258   1              transmiter_power = 1;
+ 259   1              receiver_EN = 0;
+ 260   1      }
+ 261          /*--------------------------------------------------------
+ 262                  ComMode_4_Data_Z4()
+ 263                  
+ 264                  发信号给附机，让其语音提示“电动车被抬起”
+ 265          ---------------------------------------------------------*/
+ 266          
+ 267          void ComMode_4_Data_Z4()//发送抬起编码
+ 268          {
+ 269   1              receiver_EN = 1;
+ 270   1              transmiter_power = 0;
+ 271   1              transmiter_EN = 0;
+ 272   1              myTxRxData[0]=CmdHead;
+ 273   1              myTxRxData[1]=MyAddress;
+ 274   1              myTxRxData[2]=ComMode_4;
+ 275   1      /*      myTxRxData[3]=0x00;
+ 276   1              myTxRxData[4]=0x00;
+ 277   1              myTxRxData[5]=0x00;
+ 278   1              myTxRxData[6]=0x00;
+ 279   1      */
+ 280   1              initsignal();
+ 281   1      
+ 282   1              Send_Data(28);
+ 283   1              transmiter_EN = 1;
+ 284   1              transmiter_power = 1;
+ 285   1              receiver_EN = 0;
+ 286   1      }
+ 287          
+ 288          /*-----------------------------------------------------------
+ 289                  ComMode_5_Data()
+ 290                  
+ 291                  发信号给附机，让其语音提示“电动车倒地了”
+ 292          ------------------------------------------------------------*/
+ 293          
+ 294          void ComMode_5_Data()//发送倒地编码
+ 295          {
+ 296   1              receiver_EN = 1;
+ 297   1              transmiter_power = 0;//切换为300M发射
+ 298   1              transmiter_EN = 0;      //打开无线发射机
+ 299   1              myTxRxData[0]=CmdHead;
+ 300   1              myTxRxData[1]=MyAddress;
+ 301   1              myTxRxData[2]=ComMode_5;
+ 302   1      /*      myTxRxData[3]=0x00;
+C51 COMPILER V9.51   COMMUNICATION                                                         08/28/2014 15:02:20 PAGE 6   
+
+ 303   1              myTxRxData[4]=0x00;
+ 304   1              myTxRxData[5]=0x00;
+ 305   1              myTxRxData[6]=0x00;
+ 306   1      */
+ 307   1              initsignal();
+ 308   1      
+ 309   1          Send_Data(42);
+ 310   1              transmiter_EN = 1;
+ 311   1              transmiter_power = 1;
+ 312   1              receiver_EN = 0;
+ 313   1      }
+ 314          
+ 315          /*-----------------------------------------------------------
+ 316                  ComMode_5_Data_Z4()
+ 317                  
+ 318                  发信号给附机，让其语音提示“电动车倒地了”
+ 319          ------------------------------------------------------------*/
+ 320          
+ 321          void ComMode_5_Data_Z4()//发送倒地编码
+ 322          {
+ 323   1              receiver_EN = 1;
+ 324   1              transmiter_power = 0;//切换为300M发射
+ 325   1              transmiter_EN = 0;      //打开无线发射机
+ 326   1              myTxRxData[0]=CmdHead;
+ 327   1              myTxRxData[1]=MyAddress;
+ 328   1              myTxRxData[2]=ComMode_5;
+ 329   1      /*      myTxRxData[3]=0x00;
+ 330   1              myTxRxData[4]=0x00;
+ 331   1              myTxRxData[5]=0x00;
+ 332   1              myTxRxData[6]=0x00;
+ 333   1      */
+ 334   1              initsignal();
+ 335   1      
+ 336   1              Send_Data(28);
+ 337   1              transmiter_EN = 1;
+ 338   1              transmiter_power = 1;
+ 339   1              receiver_EN = 0;
+ 340   1      }
+ 341          
+ 342          /*-----------------------------------------------------------
+ 343                  ComMode_6_Data()
+ 344                  
+ 345                  发信号给附机，让其语音提示“电动车倒地了”
+ 346          ------------------------------------------------------------*/
+ 347          
+ 348          void ComMode_6_Data()//发送倒地编码
+ 349          {
+ 350   1              receiver_EN = 1;
+ 351   1              transmiter_power = 0;//切换为300M发射
+ 352   1              transmiter_EN = 0;      //打开无线发射机
+ 353   1              myTxRxData[0]=CmdHead;
+ 354   1              myTxRxData[1]=MyAddress;
+ 355   1              myTxRxData[2]=ComMode_6;
+ 356   1      /*      myTxRxData[3]=0x00;
+ 357   1              myTxRxData[4]=0x00;
+ 358   1              myTxRxData[5]=0x00;
+ 359   1              myTxRxData[6]=0x00;
+ 360   1      */
+ 361   1              initsignal();
+ 362   1      
+ 363   1          Send_Data(42);
+ 364   1              transmiter_EN = 1;
+C51 COMPILER V9.51   COMMUNICATION                                                         08/28/2014 15:02:20 PAGE 7   
+
+ 365   1              transmiter_power = 1;
+ 366   1              receiver_EN = 0;
+ 367   1      }
+ 368          
+ 369          /*-----------------------------------------------------------
+ 370                  ComMode_6_Data_Z4()
+ 371                  
+ 372                  发信号给附机，让其语音提示“电动车倒地了”
+ 373          ------------------------------------------------------------*/
+ 374          
+ 375          void ComMode_6_Data_Z4()//发送倒地编码
+ 376          {
+ 377   1              receiver_EN = 1;
+ 378   1              transmiter_power = 0;//切换为300M发射
+ 379   1              transmiter_EN = 0;      //打开无线发射机
+ 380   1              myTxRxData[0]=CmdHead;
+ 381   1              myTxRxData[1]=MyAddress;
+ 382   1              myTxRxData[2]=ComMode_6;
+ 383   1      /*      myTxRxData[3]=0x00;
+ 384   1              myTxRxData[4]=0x00;
+ 385   1              myTxRxData[5]=0x00;
+ 386   1              myTxRxData[6]=0x00;
+ 387   1      */
+ 388   1              initsignal();
+ 389   1      
+ 390   1              Send_Data(28);
+ 391   1              transmiter_EN = 1;
+ 392   1              transmiter_power = 1;
+ 393   1              receiver_EN = 0;
+ 394   1      }
+ 395          
+ 396          /*-----------------------------------------------------------------------------
+ 397                  receive_byte()
+ 398                  receive a byte program
+ 399          -----------------------------------------------------------------------------*/
+ 400          void receive_byte(void)
+ 401                  {
+ 402   1              // P11 constantly HV, if detected a LV, judge it.
+ 403   1              if(P11 == 0)
+ 404   1                      {
+ 405   2                      // count the LV time, if more than 12ms, reset it.
+ 406   2                      if(++receive_LV_count == 120)
+ 407   2                              {
+ 408   3                              receive_LV_count = 0;
+ 409   3                              }
+ 410   2                      receive_wire_flag = 0;
+ 411   2                      }
+ 412   1              // if P11 return to HV
+ 413   1              else
+ 414   1                      {
+ 415   2                      // and already have LV before, so we think it maybe a bit signal
+ 416   2                      if(receive_wire_flag == 0)
+ 417   2                              {
+ 418   3                              // set the flag, to judge a bit only one time
+ 419   3                              receive_wire_flag = 1;
+ 420   3      
+ 421   3                              // judge the LV time, if 3.5ms < time < 8ms, we think it is a "0". time<3.5ms means a noise.
+ 422   3                              if((receive_LV_count > 35)&&(receive_LV_count <= 80))   
+ 423   3                                      {
+ 424   4                                      // save "0" to one byte
+ 425   4                                      one_receive_byte <<= 1;
+ 426   4                                      one_receive_byte &= 0xfe;
+C51 COMPILER V9.51   COMMUNICATION                                                         08/28/2014 15:02:20 PAGE 8   
+
+ 427   4                                      one_receive_byte_count++;
+ 428   4                                      receive_HV_count = 0;
+ 429   4                                      }
+ 430   3                              // time > 8ms, means a "1"
+ 431   3                              else if((receive_LV_count > 80))
+ 432   3                                      {
+ 433   4                                      // save "1" to one byte
+ 434   4                                      one_receive_byte <<= 1;
+ 435   4                                      one_receive_byte |= 0x01;
+ 436   4                                      one_receive_byte_count++;
+ 437   4                                      receive_HV_count = 0;
+ 438   4                                      }
+ 439   3                              
+ 440   3                              else
+ 441   3                                      {
+ 442   4                                      // increase the count for HV
+ 443   4                                      receive_HV_count++;     
+ 444   4                                      }
+ 445   3               // reset LV count
+ 446   3                              receive_LV_count = 0;
+ 447   3                              }
+ 448   2                      else
+ 449   2                              {
+ 450   3                              // judge whether HV count > 6ms, if yes, means a restart
+ 451   3                              if(++receive_HV_count >= 60)
+ 452   3                                      {
+ 453   4                                      one_receive_byte_count = 0;
+ 454   4                                      receive_wire_flag = 1;
+ 455   4                                      data_count = 0;
+ 456   4                                      }               
+ 457   3                              }
+ 458   2                      }
+ 459   1              }
+ 460          
+ 461          /*-----------------------------------------------------------------------------
+ 462                  receive_word()
+ 463                  receive a word program
+ 464          -----------------------------------------------------------------------------*/
+ 465          void receive_word(void)
+ 466                  {
+ 467   1              // one byte have 8 bit, once receive a bit, the count increase, once it is 8, it means a byte received.
+ 468   1              if(one_receive_byte_count == 8)
+ 469   1                      {
+ 470   2                      one_receive_byte_count = 0;
+ 471   2                      // assign one byte to buffer[i] 
+ 472   2                      received_data_buffer[data_count] = one_receive_byte;
+ 473   2                      
+ 474   2                      // judge whether buffer[0] is CmdHead
+ 475   2                      if((data_count == 0) && (received_data_buffer[0] == CmdHead))
+ 476   2                              {
+ 477   3                              data_count = 1;
+ 478   3                              }
+ 479   2                      // judge whether buffer[1] is MyAddress
+ 480   2                      else if((data_count == 1) && (received_data_buffer[1] == MyAddress))
+ 481   2                              {
+ 482   3                              data_count = 2;
+ 483   3                              }
+ 484   2                      else if(data_count == 2)
+ 485   2                              {
+ 486   3                              receive_data_finished_flag = 1;
+ 487   3                              data_count = 0;
+ 488   3                              }
+C51 COMPILER V9.51   COMMUNICATION                                                         08/28/2014 15:02:20 PAGE 9   
+
+ 489   2                      else 
+ 490   2                              {
+ 491   3                              data_count = 0;
+ 492   3                              }
+ 493   2                      }
+ 494   1              }
+ 495          
+ 496          /*--------------------------------------------------
+ 497                  send_code_to_lock()
+ 498                  
+ 499                  将密码发送给锁体。
+ 500          ---------------------------------------------------*/
+ 501          
+ 502          void send_code_to_lock(void)    
+ 503          {
+ 504   1              unsigned char i,n;
+ 505   1              myTxRxData[0]=CmdHead;
+ 506   1              myTxRxData[1]=MyAddress;
+ 507   1              myTxRxData[2]=ComMode_1;
+ 508   1      /*      myTxRxData[3]=0x00;
+ 509   1              myTxRxData[4]=0x00;
+ 510   1              myTxRxData[5]=0x00;
+ 511   1              myTxRxData[6]=0x00;
+ 512   1      */
+ 513   1              for(i=0;i<3;i++)
+ 514   1              {
+ 515   2                      for(n=0;n<8;n++)
+ 516   2                      {
+ 517   3                              if((myTxRxData[i]&0x80) == 0x80)//为1
+ 518   3                              {
+ 519   4                                      MagentControl_1 = 0;
+ 520   4                                      Custom_Delay(36, 42);
+ 521   4                              }
+ 522   3                              else//为0的情况
+ 523   3                              {
+ 524   4                                      MagentControl_1 = 0;
+ 525   4                                      Custom_Delay(23, 42);
+ 526   4                              }
+ 527   3                              MagentControl_1 = 1;            //常态为高电平
+ 528   3                              myTxRxData[i] <<= 1;
+ 529   3                              Custom_Delay(15, 42);
+ 530   3                      }
+ 531   2              }
+ 532   1      }
+ 533          
+ 534          /*--------------------------------------------------
+ 535                  send_code_to_lock_Z4()
+ 536                  
+ 537                  将密码发送给锁体。
+ 538          ---------------------------------------------------*/
+ 539          
+ 540          void send_code_to_lock_Z4(void) 
+ 541          {
+ 542   1              unsigned char i,n;
+ 543   1              myTxRxData[0]=CmdHead;
+ 544   1              myTxRxData[1]=MyAddress;
+ 545   1              myTxRxData[2]=ComMode_1;
+ 546   1      /*      myTxRxData[3]=0x00;
+ 547   1              myTxRxData[4]=0x00;
+ 548   1              myTxRxData[5]=0x00;
+ 549   1              myTxRxData[6]=0x00;
+ 550   1      */
+C51 COMPILER V9.51   COMMUNICATION                                                         08/28/2014 15:02:20 PAGE 10  
+
+ 551   1              for(i=0;i<3;i++)
+ 552   1              {
+ 553   2                      for(n=0;n<8;n++)
+ 554   2                      {
+ 555   3                              if((myTxRxData[i]&0x80) == 0x80)//为1
+ 556   3                              {
+ 557   4                                      MagentControl_1 = 0;
+ 558   4                                      Custom_Delay(36, 42);
+ 559   4                              }
+ 560   3                              else//为0的情况
+ 561   3                              {
+ 562   4                                      MagentControl_1 = 0;
+ 563   4                                      Custom_Delay(23, 42);
+ 564   4                              }
+ 565   3                              MagentControl_1 = 1;            //常态为高电平
+ 566   3                              myTxRxData[i] <<= 1;
+ 567   3                              Custom_Delay(15, 42);
+ 568   3                      }
+ 569   2              }
+ 570   1      }
+ 571          /*--------------------------------------------------
+ 572                  send_code_to_lock_Z4T0()
+ 573                  
+ 574                  将密码发送给锁体。
+ 575          ---------------------------------------------------*/
+ 576          
+ 577          void send_code_to_lock_Z4T0(void)       
+ 578          {
+ 579   1              unsigned char i,n;
+ 580   1              myTxRxData[0]=CmdHead;
+ 581   1              myTxRxData[1]=MyAddress;
+ 582   1              myTxRxData[2]=ComMode_1;
+ 583   1      /*      myTxRxData[3]=0x00;
+ 584   1              myTxRxData[4]=0x00;
+ 585   1              myTxRxData[5]=0x00;
+ 586   1              myTxRxData[6]=0x00;
+ 587   1      */
+ 588   1              for(i=0;i<3;i++)
+ 589   1              {
+ 590   2                      for(n=0;n<8;n++)
+ 591   2                      {
+ 592   3                              if((myTxRxData[i]&0x80) == 0x80)//为1
+ 593   3                              {
+ 594   4                                      MagentControl_1 = 0;
+ 595   4                                      Custom_Delay(36, 28);
+ 596   4                              }
+ 597   3                              else//为0的情况
+ 598   3                              {
+ 599   4                                      MagentControl_1 = 0;
+ 600   4                                      Custom_Delay(23, 28);
+ 601   4                              }
+ 602   3                              MagentControl_1 = 1;            //常态为高电平
+ 603   3                              myTxRxData[i] <<= 1;
+ 604   3                              Custom_Delay(15, 28);
+ 605   3                      }
+ 606   2              }
+ 607   1      }
+ 608          /*--------------------------------------------------
+ 609                  send_code_to_lock_Z4T1()
+ 610                  
+ 611                  将密码发送给锁体。
+ 612          ---------------------------------------------------*/
+C51 COMPILER V9.51   COMMUNICATION                                                         08/28/2014 15:02:20 PAGE 11  
+
+ 613          
+ 614          void send_code_to_lock_Z4T1(void)       
+ 615          {
+ 616   1              unsigned char i,n;
+ 617   1              myTxRxData[0]=CmdHead;
+ 618   1              myTxRxData[1]=MyAddress;
+ 619   1              myTxRxData[2]=ComMode_1;
+ 620   1      /*      myTxRxData[3]=0x00;
+ 621   1              myTxRxData[4]=0x00;
+ 622   1              myTxRxData[5]=0x00;
+ 623   1              myTxRxData[6]=0x00;
+ 624   1      */
+ 625   1              for(i=0;i<3;i++)
+ 626   1              {
+ 627   2                      for(n=0;n<8;n++)
+ 628   2                      {
+ 629   3                              if((myTxRxData[i]&0x80) == 0x80)//为1
+ 630   3                              {
+ 631   4                                      MagentControl_1 = 0;
+ 632   4                                      Custom_Delay(36, 42);
+ 633   4                              }
+ 634   3                              else//为0的情况
+ 635   3                              {
+ 636   4                                      MagentControl_1 = 0;
+ 637   4                                      Custom_Delay(23, 42);
+ 638   4                              }
+ 639   3                              MagentControl_1 = 1;            //常态为高电平
+ 640   3                              myTxRxData[i] <<= 1;
+ 641   3                              Custom_Delay(15, 42);
+ 642   3                      }
+ 643   2              }
+ 644   1      }
+ 645          
+ 646          /*--------------------------------------------------
+ 647                  send_code_to_lock_for_Unlock()
+ 648                  
+ 649                  将密码发送给锁体。
+ 650          ---------------------------------------------------*/
+ 651          
+ 652          void send_code_to_lock_for_Unlock(void) 
+ 653          {
+ 654   1              unsigned char i,n;
+ 655   1              myTxRxData[0]=CmdHead;
+ 656   1              myTxRxData[1]=MyAddress;
+ 657   1              myTxRxData[2]=ComMode_1;
+ 658   1      /*      myTxRxData[3]=0x00;
+ 659   1              myTxRxData[4]=0x00;
+ 660   1              myTxRxData[5]=0x00;
+ 661   1              myTxRxData[6]=0x00;
+ 662   1      */
+ 663   1              for(i=0;i<3;i++)
+ 664   1              {
+ 665   2                      for(n=0;n<8;n++)
+ 666   2                      {
+ 667   3                              if((myTxRxData[i]&0x80) == 0x80)//为1
+ 668   3                              {
+ 669   4                                      MagentControl_2 = 0;
+ 670   4                                      Custom_Delay(34, 42);
+ 671   4                              }
+ 672   3                              else//为0的情况
+ 673   3                              {
+ 674   4                                      MagentControl_2 = 0;
+C51 COMPILER V9.51   COMMUNICATION                                                         08/28/2014 15:02:20 PAGE 12  
+
+ 675   4                                      Custom_Delay(23, 42);
+ 676   4                              }
+ 677   3                              MagentControl_2 = 1;            //常态为高电平
+ 678   3                              myTxRxData[i] <<= 1;
+ 679   3                              Custom_Delay(15, 42);
+ 680   3                      }
+ 681   2              }
+ 682   1      }
+ 683                  
+ 684          /*---------------------------------------------------
+ 685                  end of file
+ 686          ----------------------------------------------------*/
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1083    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      7      18
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

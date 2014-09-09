@@ -1,0 +1,118 @@
+C51 COMPILER V9.51   OPERATION                                                             07/17/2014 13:52:12 PAGE 1   
+
+
+C51 COMPILER V9.51, COMPILATION OF MODULE OPERATION
+OBJECT MODULE PLACED IN .\operation.obj
+COMPILER INVOKED BY: D:\Program Files (x86)\keil\C51\BIN\C51.EXE ..\Library\operation.c ROM(COMPACT) BROWSE INCDIR(..\Li
+                    -brary) DEBUG OBJECTEXTEND PRINT(.\operation.lst) OBJECT(.\operation.obj)
+
+line level    source
+
+   1          /*-------------------------------------------------------------
+   2                  operation.c
+   3                  operation in all case
+   4          --------------------------------------------------------------*/
+   5          
+   6          #include "main.h"
+   7          #include "port.h"
+   8          
+   9          #include "operation.h"
+  10          #include "other.h"
+  11          #include "voice.h"
+  12          #include "battery.h"
+  13          #include "delay.h"
+  14          
+  15          /*------- Public variable declarations --------------------------*/
+  16          extern bit position_sensor_EN;                  //位置传感器，即倒地抬起传感器总开关，1的时候，检测这两个传感器
+  17          extern bit fell_flag;                                           //判断主机倒下后，置1
+  18          extern bit raised_flag;                                 //判断主机被抬起后，置1
+  19          extern tByte sensor_trigger_count;              //传感器触发计数
+  20          extern tByte sensor_1ststage_count;     //传感器第一阶段判断低电平的计数
+  21          extern bit raised_fell_once_flag;                       //raised_fell_flag是否曾经标志过，如果标志过则置1.然后主机被恢复倒地或
+             -者恢复抬起时，此标志位复位。
+  22          extern bit raised_fell_flag;                                    //倒地或者抬起触发后，此标志位置1
+  23          extern bit host_stolen_alarm1_EN;      //判断为被盗报警后的第一段语音使能
+  24          extern bit host_stolen_alarm2_EN;      //判断为被盗报警后的第二段语音使能
+  25          extern tByte host_stolen_alarm1_count;          //判断为被盗报警后的第一段语音次数
+  26          extern tByte host_stolen_alarm2_count;          //判断为被盗报警后的第二段语音次数
+  27          extern bit stolen_alarm_flag;                                   // when host been touch 3 times, this flag 1 before alarm voice present,
+             - not to detect sensor for 1st voice alarm.
+  28          extern tWord sensor_3rdstage_time;                      //传感器进入第三阶段的时间，
+  29          extern tByte sensor_3rdstage_effcount;          //传感器进入第三阶段后，有效触碰次数的计数
+  30          extern tByte sensor_3rdstage_count;                     //传感器进入第三阶段后，低电平的计数
+  31          extern tWord sensor_3rdstage_interval;          //传感器在第三阶段中，每次有效低电平计数之间的时间间隔。在这期间的
+             -低电平不认为有效。
+  32          extern tWord sensor_2ndstage_time;              //传感器进入第二阶段后流逝时间的计数
+  33          extern tByte sensor_2ndstage_count;             //传感器进入第二阶段检测时，计算低电平的时间
+  34          extern tByte nearby_away_interval;              //附机离开和靠近时，语音提示和开关锁的时间间隔
+  35          extern tByte key_rotated_on_flag;                       //电动车开启关闭标志位，1表示电动车开启了，0表示电动车关闭了
+  36          extern tWord ADC_check_result;          //作为AD检测值
+  37          extern tByte wire_broken_count;         // 作为断线后的时间检测
+  38          extern bit wire_broken_flag;                    // 剪断锁线的标志位
+  39          extern bit battery_stolen_EN;                   // 作为电池被盗的使能端
+  40          extern tByte battery_stolen_count;      // 作为电池被盗的报警次数
+  41          extern bit sensor_3rdalarm_flag;
+  42          extern tByte enable_sensor_delay_count;         // 传感器延迟的时间
+  43          bit enable_sensor_delayEN = 0;          // 关钥匙后，延迟传感器的打开
+  44          
+  45          /*-----------------------------------------
+  46                  slave_away_operation().c
+  47                  
+  48                  operation for slave is away
+  49          ------------------------------------------*/
+  50          void slave_away_operation(void)
+  51                  {
+C51 COMPILER V9.51   OPERATION                                                             07/17/2014 13:52:12 PAGE 2   
+
+  52   1              // turn off the magnet 
+  53   1              magnet_ACW();
+  54   1              
+  55   1              // speech for slave away
+  56   1              slave_away_speech();    
+  57   1              
+  58   1      //      enable_sensor();        
+  59   1              enable_sensor_delayEN = 1;
+  60   1              enable_sensor_delay_count = 0;
+  61   1      
+  62   1              // delay time, avoid sensor trigger on.
+  63   1              Delay(20);
+  64   1              }
+  65          
+  66          /*----------------------------------------------------------------------
+  67                          slave_nearby_operation()
+  68                          operation for slave is nearby
+  69          ----------------------------------------------------------------------*/
+  70          void slave_nearby_operation(void)
+  71                  {
+  72   1      
+  73   1              // turn on the magnet
+  74   1              magnet_CW();
+  75   1      
+  76   1              // speech for slave nearby
+  77   1              slave_nearby_speech();
+  78   1              // handle with battery status 
+  79   1              verifybattery(ADC_check_result);                                        
+  80   1              // rotate on speech
+  81   1              key_rotate_on_speech();
+  82   1              nearby_away_interval = 0;
+  83   1              
+  84   1              disable_sensor();
+  85   1              }
+  86                  
+  87          /*---------------------------------------------------
+  88                  end of file
+  89          ----------------------------------------------------*/
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     39    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

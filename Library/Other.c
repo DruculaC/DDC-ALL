@@ -101,6 +101,8 @@ void disable_sensor(void)
 	wire_broken_count = 0;
 	wire_broken_flag = 0;
 	
+	enable_sensor_delayEN = 0;
+	enable_sensor_delay_count = 0;
 	if(Auto_Mode == 1)
 		{
 		// reset battery stolen

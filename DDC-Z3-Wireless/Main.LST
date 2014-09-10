@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   MAIN                                                                  07/18/2014 08:58:25 PAGE 1   
+C51 COMPILER V9.51   MAIN                                                                  09/10/2014 14:03:49 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE MAIN
@@ -52,30 +52,30 @@ line level    source
   41          tByte sensor_trigger_count=0;           //´«¸ÐÆ÷´¥·¢¼ÆÊý
   42          tWord sensor_2ndstage_time=0;           //´«¸ÐÆ÷½øÈëµÚ¶þ½×¶ÎºóÁ÷ÊÅÊ±¼äµÄ¼ÆÊý
   43          tByte sensor_1ststage_count=0;  //´«¸ÐÆ÷µÚÒ»½×¶ÎÅÐ¶ÏµÍµçÆ½µÄ¼ÆÊý
-  44          tByte nearby_away_interval = 0;         //¸½»úÀë¿ªºÍ¿¿½üÊ±£¬ÓïÒôÌáÊ¾ºÍ¿ª¹ØËøµÄÊ±¼ä¼ä¸ô
-  45          
-  46          tByte raised_alarm_count = 0;    //Ö÷»ú±»Ì§Æðºó£¬Ïò¸½»ú·¢³ö±¨¾¯ÐÅºÅµÄ´ÎÊý
-  47          tByte fell_alarm_count=0;        //Ö÷»úµ¹µØºó£¬Ïò¸½»ú·¢³ö±¨¾¯ÐÅºÅµÄ´ÎÊý
-  48          tWord timer0_count=0;           // counter for timer0, increment every ticket                   
-  49          tByte received_data_buffer[7]={0x00,0x00,0x00,0x00,0x00,0x00,0x00};             //½ÓÊÕÊý¾Ý»º´æ
-  50          bit receive_data_finished_flag = 0;             //½ÓÊÕÕâÒ»´®Êý¾ÝÍê³Éºó£¬´Ë±êÖ¾Î»ÖÃ1
-  51          tByte data_count = 0;                           //½ÓÊÕÊý¾Ý»º´æµÄÎ»Êý£¬¼´±íÃ÷µÚ¼¸¸ö»º´æÊý¾Ý
-  52          tByte one_receive_byte = 0;             //½ÓÊÕÊý¾ÝµÄÒ»¸ö×Ö½Ú£¬½ÓÊÕÍêºó½«Æä¸³Öµ¸øreceived_data_bufferÏà¶ÔÓ¦µÄ×Ö½Ú
-  53          tByte one_receive_byte_count = 0;                       //one_receive_byteÓÐ8Î»£¬´Ë¼ÆÊý±íÃ÷½ÓÊÕµ½µÚ¼¸Î»£¬Ã¿´Î¼ÆÊýµ½8µÄÊ±ºò±íÃ÷
-C51 COMPILER V9.51   MAIN                                                                  07/18/2014 08:58:25 PAGE 2   
-
+  44          
+  45          tByte raised_alarm_count = 0;    //Ö÷»ú±»Ì§Æðºó£¬Ïò¸½»ú·¢³ö±¨¾¯ÐÅºÅµÄ´ÎÊý
+  46          tByte fell_alarm_count=0;        //Ö÷»úµ¹µØºó£¬Ïò¸½»ú·¢³ö±¨¾¯ÐÅºÅµÄ´ÎÊý
+  47          tWord timer0_count=0;           // counter for timer0, increment every ticket                   
+  48          tByte received_data_buffer[7]={0x00,0x00,0x00,0x00,0x00,0x00,0x00};             //½ÓÊÕÊý¾Ý»º´æ
+  49          bit receive_data_finished_flag = 0;             //½ÓÊÕÕâÒ»´®Êý¾ÝÍê³Éºó£¬´Ë±êÖ¾Î»ÖÃ1
+  50          tByte data_count = 0;                           //½ÓÊÕÊý¾Ý»º´æµÄÎ»Êý£¬¼´±íÃ÷µÚ¼¸¸ö»º´æÊý¾Ý
+  51          tByte one_receive_byte = 0;             //½ÓÊÕÊý¾ÝµÄÒ»¸ö×Ö½Ú£¬½ÓÊÕÍêºó½«Æä¸³Öµ¸øreceived_data_bufferÏà¶ÔÓ¦µÄ×Ö½Ú
+  52          tByte one_receive_byte_count = 0;                       //one_receive_byteÓÐ8Î»£¬´Ë¼ÆÊý±íÃ÷½ÓÊÕµ½µÚ¼¸Î»£¬Ã¿´Î¼ÆÊýµ½8µÄÊ±ºò±íÃ÷
              -Ò»¸ö×Ö½Ú½ÓÊÕÍê³É¡£
-  54          bit receive_wire_flag = 1;              //½ÓÊÕÍ¨ÐÅÏßµÄ±êÖ¾Î»£¬1±íÃ÷¸ßµçÆ½£¬0±íÃ÷µÍµçÆ½£¬Ã¿´Îtimer1Òç³öÊ±£¬ÅÐ¶ÏP1.1Ò»´Î
+C51 COMPILER V9.51   MAIN                                                                  09/10/2014 14:03:49 PAGE 2   
+
+  53          bit receive_wire_flag = 1;              //½ÓÊÕÍ¨ÐÅÏßµÄ±êÖ¾Î»£¬1±íÃ÷¸ßµçÆ½£¬0±íÃ÷µÍµçÆ½£¬Ã¿´Îtimer1Òç³öÊ±£¬ÅÐ¶ÏP1.1Ò»´Î
              -¡£ÒÔ´ËÀ´±íÃ÷ÊÇ·ñÎªÒ»´ÎÕýÈ·µÄÏÂ½µÑØ
-  55          tByte receive_HV_count = 0;             //¶¨Ê±Æ÷T1ÔÚÃ»ÓÐÐÅºÅµ½À´µÄÊ±ºò£¬¶Ô¸ßµçÆ½¼ÆÊý£¬Ò»µ©³¬¹ýÄ³¸öÖµ£¬Ôò½«one_receive
+  54          tByte receive_HV_count = 0;             //¶¨Ê±Æ÷T1ÔÚÃ»ÓÐÐÅºÅµ½À´µÄÊ±ºò£¬¶Ô¸ßµçÆ½¼ÆÊý£¬Ò»µ©³¬¹ýÄ³¸öÖµ£¬Ôò½«one_receive
              -_byte_countÇå0
-  56          tByte receive_LV_count = 0;             //Ã¿´Îtimer1Òç³öÊ±ÅÐ¶Ï½ÓÊÕÏßÈç¹ûÎªLV£¬Ôò¼ÆÊý¼Ó1£¬ÒÔ´ËÀ´±íÃ÷µÍµçÆ½µÄÊ±¼ä
-  57          tByte fell_wire_time=0;          //µ¹µØ¼ì²âÏß£¬¼ì²âµÍµçÆ½µÄÊ±¼ä
-  58          tByte raise_wire_time=0;                        //Ì§Æð¼ì²âÏß£¬¼ì²âµÍµçÆ½µÄÊ±¼ä
-  59          tWord raised_fell_number = 0;                           //µ¹µØ»òÕßÌ§Æð³ö·¢ºó£¬¼ÆÊý£¬µ½´ïÒ»¶¨ÊýÖµºó£¬½«ÆäÓë±êÖ¾Î»Ò»ÆðÇåÁã¡£
-  60          bit raised_fell_once_flag = 0;                  //raised_fell_flagÊÇ·ñÔø¾­±êÖ¾¹ý£¬Èç¹û±êÖ¾¹ýÔòÖÃ1.È»ºóÖ÷»ú±»»Ö¸´µ¹µØ»òÕß»
+  55          tByte receive_LV_count = 0;             //Ã¿´Îtimer1Òç³öÊ±ÅÐ¶Ï½ÓÊÕÏßÈç¹ûÎªLV£¬Ôò¼ÆÊý¼Ó1£¬ÒÔ´ËÀ´±íÃ÷µÍµçÆ½µÄÊ±¼ä
+  56          tByte fell_wire_time=0;          //µ¹µØ¼ì²âÏß£¬¼ì²âµÍµçÆ½µÄÊ±¼ä
+  57          tByte raise_wire_time=0;                        //Ì§Æð¼ì²âÏß£¬¼ì²âµÍµçÆ½µÄÊ±¼ä
+  58          tWord raised_fell_number = 0;                           //µ¹µØ»òÕßÌ§Æð³ö·¢ºó£¬¼ÆÊý£¬µ½´ïÒ»¶¨ÊýÖµºó£¬½«ÆäÓë±êÖ¾Î»Ò»ÆðÇåÁã¡£
+  59          bit raised_fell_once_flag = 0;                  //raised_fell_flagÊÇ·ñÔø¾­±êÖ¾¹ý£¬Èç¹û±êÖ¾¹ýÔòÖÃ1.È»ºóÖ÷»ú±»»Ö¸´µ¹µØ»òÕß»
              -Ö¸´Ì§ÆðÊ±£¬´Ë±êÖ¾Î»¸´Î»¡£
-  61          tByte key_rotated_on_flag=0;                    //µç¶¯³µ¿ªÆô¹Ø±Õ±êÖ¾Î»£¬1±íÊ¾µç¶¯³µ¿ªÆôÁË£¬0±íÊ¾µç¶¯³µ¹Ø±ÕÁË
+  60          tByte key_rotated_on_flag = 1;                  //µç¶¯³µ¿ªÆô¹Ø±Õ±êÖ¾Î»£¬1±íÊ¾µç¶¯³µ¿ªÆôÁË£¬0±íÊ¾µç¶¯³µ¹Ø±ÕÁË
+  61          tByte key_rotated_off_flag=0;                   //µç¶¯³µ¹Ø±Õ±êÖ¾Î»£¬1±íÊ¾µç¶¯³µ¿ªÆôÁË£¬0±íÊ¾µç¶¯³µ¹Ø±ÕÁË
   62          tWord ADC_check_result = 0;             //×÷ÎªAD¼ì²âÖµ
   63          tByte wire_broken_count = 0;            // ×÷Îª¶ÏÏßºóµÄÊ±¼ä¼ì²â
   64          bit battery_stolen_EN = 0;                      // ×÷Îªµç³Ø±»µÁµÄÊ¹ÄÜ¶Ë
@@ -93,591 +93,598 @@ line level    source
   76          bit sensor_3rdalarm_flag = 0;
   77          bit wheeled_flag = 0;
   78          tWord wheeled_count = 0;
-  79          
-  80          
-  81          void main()
-  82                  {
-  83   1      
-  84   1      /*      InitUART();
-  85   1              InitT0(1);
-  86   1              
-  87   1              TI = 0;
-  88   1              RI = 0;
-  89   1              ES = 1;
-  90   1              ET0 = 1;
-  91   1              PS = 1;
-  92   1              EA = 1;
-  93   1      */
-  94   1              
-  95   1              InitTimer(1,100);
-  96   1              
-  97   1              sensor_EN = 0;
-  98   1              position_sensor_EN = 0;
-  99   1      
- 100   1              noVoice();
- 101   1      
- 102   1              voice_EN=0;             //½«¹¦·Å¹Ø±Õ
- 103   1      
- 104   1              raised_sensor_detect=1;
- 105   1              fell_sensor_detect=1;
- 106   1      
- 107   1              P10=1;
- 108   1              
- 109   1          horizontal_sensor = 1;
- 110   1              // open communication
- 111   1              
-C51 COMPILER V9.51   MAIN                                                                  07/18/2014 08:58:25 PAGE 3   
+  79          tByte key_rotate_count = 0;
+  80          bit key_rotate_flag = 0;
+  81          bit lock_rotate_on_flag = 1;
+  82          bit lock_rotate_off_flag = 0;
+  83          bit slave_away_flag = 1;
+  84          bit Auto_Mode = 1;              //×Ô¶¯¿ª¹ØËøÄ£Ê½´ò¿ª£¬Ã¿´ÎÊÕµ½ComMode_8Ê±£¬ÊÖ¶¯ºÍ×Ô¶¯ÇÐ»»
+  85          
+  86          
+  87          void main()
+  88                  {
+  89   1      
+  90   1      /*      InitUART();
+  91   1              InitT0(1);
+  92   1              
+  93   1              TI = 0;
+  94   1              RI = 0;
+  95   1              ES = 1;
+  96   1              ET0 = 1;
+  97   1              PS = 1;
+  98   1              EA = 1;
+  99   1      */
+ 100   1              
+ 101   1              InitTimer(1,100);
+ 102   1              
+ 103   1              sensor_EN = 0;
+ 104   1              position_sensor_EN = 0;
+ 105   1      
+ 106   1              noVoice();
+ 107   1      
+ 108   1              voice_EN=0;             //½«¹¦·Å¹Ø±Õ
+ 109   1      
+ 110   1              raised_sensor_detect=1;
+ 111   1              fell_sensor_detect=1;
+C51 COMPILER V9.51   MAIN                                                                  09/10/2014 14:03:49 PAGE 3   
 
- 112   1              // turn off transmitter, turn on receiver
- 113   1              transmiter_EN = 1;
- 114   1              receiver_EN = 0;
- 115   1      
- 116   1              nearby_away_interval = 6;                       //³õÊ¼»¯Ê¹¸½»úºÍÖ÷»ú¿ª¹Ø»úµÄ¼ÆÊýÎª¿ÉÒÔÖ´ÐÐµÄ×´Ì¬
+ 112   1      
+ 113   1              P10=1;
+ 114   1              
+ 115   1          horizontal_sensor = 1;
+ 116   1              // open communication
  117   1              
- 118   1              // initialize the magnet, 
- 119   1              MagentControl_1 = 1;
- 120   1              MagentControl_2 = 1;
+ 118   1              // turn off transmitter, turn on receiver
+ 119   1              transmiter_EN = 1;
+ 120   1              receiver_EN = 1;
  121   1      
- 122   1              transmiter_power = 1; 
- 123   1         
- 124   1              wire_broken = 1;
- 125   1              
- 126   1              // lock the external motor, ·ÀÖ¹Ëø»¹Ã»ÍêÈ«´ò¿ªµÄÊ±ºò£¬³µÊÖ¼Óµçµ¼ÖÂÂÖ×ÓÓëËøµÄ¸æËßÅö×²¡£ 
- 127   1              motor_lock = 1;
- 128   1      
- 129   1              while(1)
- 130   1                      {        
- 131   2                      
- 132   2                      // ÅÐ¶Ï´«¸ÐÆ÷ÊÇ·ñÔÚÕñ¶¯
- 133   2                      if((sensor_detect == 0)||(horizontal_sensor == 0))
- 134   2                              {
- 135   3                              vibration_flag = 1;
- 136   3                              vibration_count = 0;                    
- 137   3                              }               
- 138   2                      }
- 139   1              }
- 140          
- 141          /*------------------------------------------------------------------
- 142                  timerT0()
- 143                  operation every ticket.
- 144          --------------------------------------------------------------------*/
- 145          
- 146          void timer0() interrupt interrupt_timer_0_overflow
- 147                  {
- 148   1              // manually reload timer0 configuration
- 149   1              TH0 = timer0_8H;
- 150   1              TL0 = timer0_8L;
- 151   1              
- 152   1              // timer0 is 1ms ticket, count the time flow of timer0, then operate every 2s.
- 153   1              if(++timer0_count >= 2000)
- 154   1                      {
- 155   2                      // reset timer0 ticket counter every 2s
- 156   2                      timer0_count=0;
- 157   2                      
- 158   2                      // detect the battery voltage
- 159   2                      ADC_check_result = GetADCResult(6);     
- 160   2                      
- 161   2                      // if fell and raised flag is 1, send alarm signal every 2s.
- 162   2                      if((fell_flag==1)&&(fell_alarm_count<5))
- 163   2                              {
- 164   3                              ComMode_5_Data();
- 165   3                              fell_alarm_count++;
- 166   3                              }
- 167   2                      if((raised_flag==1)&&(raised_alarm_count<5))            
+ 122   1              
+ 123   1              // initialize the magnet, 
+ 124   1              MagentControl_1 = 1;
+ 125   1              MagentControl_2 = 1;
+ 126   1      
+ 127   1              transmiter_power = 1; 
+ 128   1         
+ 129   1              wire_broken = 1;
+ 130   1              TR0 = 1;
+ 131   1              
+ 132   1              // lock the external motor, ·ÀÖ¹Ëø»¹Ã»ÍêÈ«´ò¿ªµÄÊ±ºò£¬³µÊÖ¼Óµçµ¼ÖÂÂÖ×ÓÓëËøµÄ¸æËßÅö×²¡£ 
+ 133   1              motor_lock = 1;
+ 134   1      
+ 135   1              while(1)
+ 136   1                      {        
+ 137   2                      
+ 138   2                      // ÅÐ¶Ï´«¸ÐÆ÷ÊÇ·ñÔÚÕñ¶¯
+ 139   2                      if((sensor_detect == 0)||(horizontal_sensor == 0))
+ 140   2                              {
+ 141   3                              vibration_flag = 1;
+ 142   3                              vibration_count = 0;                    
+ 143   3                              }               
+ 144   2                      }
+ 145   1              }
+ 146          
+ 147          /*------------------------------------------------------------------
+ 148                  timerT0()
+ 149                  operation every ticket.
+ 150          --------------------------------------------------------------------*/
+ 151          
+ 152          void timer0() interrupt interrupt_timer_0_overflow
+ 153                  {
+ 154   1              // manually reload timer0 configuration
+ 155   1              TH0 = timer0_8H;
+ 156   1              TL0 = timer0_8L;
+ 157   1              
+ 158   1              // timer0 is 1ms ticket, count the time flow of timer0, then operate every 2s.
+ 159   1              if(++timer0_count >= 2000)
+ 160   1                      {
+ 161   2                      // reset timer0 ticket counter every 2s
+ 162   2                      timer0_count=0;
+ 163   2                      
+ 164   2                      // detect the battery voltage
+ 165   2                      ADC_check_result = GetADCResult(6);     
+ 166   2                      
+ 167   2                      if(++key_rotate_count < 1)              
  168   2                              {
- 169   3                              ComMode_4_Data();
- 170   3                              raised_alarm_count++;
- 171   3                              }
- 172   2                              
- 173   2                      if((battery_stolen_EN == 1)&&(battery_stolen_count < 4))
-C51 COMPILER V9.51   MAIN                                                                  07/18/2014 08:58:25 PAGE 4   
+ 169   3                              if((key_rotated_on_flag == 1)||(key_rotated_off_flag == 1))
+ 170   3                                      {
+ 171   4                                      ComMode_Data(ComMode_1, 28);                            
+ 172   4                                      }
+ 173   3                              }
+C51 COMPILER V9.51   MAIN                                                                  09/10/2014 14:03:49 PAGE 4   
 
- 174   2                              {
- 175   3                              if(key_rotate == 0)
- 176   3                                      {
- 177   4                                      ComMode_2_Data();
- 178   4                                      battery_stolen_speech();
- 179   4                                      battery_stolen_count++;
- 180   4                                      }
- 181   3                              }
- 182   2                      
- 183   2                      if(IDkey_flag == 1)
- 184   2                              {
- 185   3                              if(++IDkey_count >= 15)
- 186   3                                      {
- 187   4                                      IDkey_count = 0;
- 188   4                                      IDkey_flag = 0;
- 189   4                                      if(key_rotated_on_flag == 0)
- 190   4                                              {
- 191   5                                              enable_sensor();                                        
- 192   5                                              }
- 193   4                                      }                       
- 194   3                              }
- 195   2                                                                              
- 196   2                      if((enable_sensor_delayEN == 1)&&(key_rotate == 0))
- 197   2                              {
- 198   3                              if(++enable_sensor_delay_count >= 5)
- 199   3                                      {
- 200   4                                      enable_sensor_delay_count = 0;
- 201   4                                      enable_sensor_delayEN = 0;
- 202   4                                      enable_sensor();
- 203   4                                      }
- 204   3                              }
- 205   2                      
- 206   2                              
- 207   2                      // whether host has been touched 3 times, if yes, then alarm 2 speech alternantively.
- 208   2                      if((host_stolen_alarm1_EN == 1)&&(host_stolen_alarm1_count < 4))
- 209   2                              {
- 210   3                              stolen_alarm_flag = 1;
- 211   3                              if(key_rotate == 0)
- 212   3                                      {
- 213   4                                      if(wire_broken_flag == 0)
- 214   4                                              {
- 215   5                                              ComMode_3_Data();                                                                  
- 216   5                                              }
- 217   4                                      else
- 218   4                                              {                                                                     
- 219   5                                              ComMode_6_Data();
- 220   5                                              }
- 221   4                                              
- 222   4                                      stolen_alarm_speech1();
- 223   4                                      }
- 224   3                              if(++host_stolen_alarm1_count >= 4)
- 225   3                                      {                                                                                       
- 226   4                                      host_stolen_alarm1_count = 0;
- 227   4                                      host_stolen_alarm1_EN = 0;
- 228   4                                      stolen_alarm_flag = 0;
- 229   4                                      sensor_3rdalarm_flag = 0;
- 230   4                                      }
- 231   3                              }
- 232   2                      if((host_stolen_alarm2_EN == 1)&&(host_stolen_alarm2_count < 4))
- 233   2                              {
- 234   3                              stolen_alarm_flag = 1;
- 235   3                              if(key_rotate == 0)
-C51 COMPILER V9.51   MAIN                                                                  07/18/2014 08:58:25 PAGE 5   
+ 174   2                      else
+ 175   2                              key_rotate_count = 31;
+ 176   2                              
+ 177   2      //              if(lock_rotate_off_flag == 0)
+ 178   2      //                      {
+ 179   2                              if(++IDkey_count > 4)
+ 180   2                                      {
+ 181   3                                      IDkey_count = 8;
+ 182   3                                      slave_away_flag = 1;
+ 183   3                                      if((enable_sensor_delayEN == 0)&&(lock_rotate_off_flag == 1))
+ 184   3                                              {
+ 185   4                                              enable_sensor_delayEN = 1;
+ 186   4                                              enable_sensor_delay_count = 0;
+ 187   4                                              }
+ 188   3                                      }                       
+ 189   2      //                      }
+ 190   2                                                                              
+ 191   2                      if((enable_sensor_delayEN == 1)&&(lock_rotate_off_flag == 1))
+ 192   2                              {
+ 193   3                              if(++enable_sensor_delay_count >= 5)
+ 194   3                                      {
+ 195   4                                      enable_sensor_delay_count = 0;
+ 196   4                                      enable_sensor_delayEN = 0;
+ 197   4                                      enable_sensor();
+ 198   4                                      }
+ 199   3                              }
+ 200   2                      
+ 201   2                              
+ 202   2                      // whether host has been touched 3 times, if yes, then alarm 2 speech alternantively.
+ 203   2                      if((host_stolen_alarm1_EN == 1)&&(host_stolen_alarm1_count < 4))
+ 204   2                              {
+ 205   3                              stolen_alarm_flag = 1;
+ 206   3                              if(key_rotate == 0)
+ 207   3                                      {
+ 208   4                                      stolen_alarm_speech1();
+ 209   4                                      }
+ 210   3                              if(++host_stolen_alarm1_count >= 4)
+ 211   3                                      {                                                                                       
+ 212   4                                      host_stolen_alarm1_count = 0;
+ 213   4                                      host_stolen_alarm1_EN = 0;
+ 214   4                                      stolen_alarm_flag = 0;
+ 215   4                                      sensor_3rdalarm_flag = 0;
+ 216   4                                      }
+ 217   3                              }
+ 218   2                      if((host_stolen_alarm2_EN == 1)&&(host_stolen_alarm2_count < 4))
+ 219   2                              {
+ 220   3                              stolen_alarm_flag = 1;
+ 221   3                              if(key_rotate == 0)
+ 222   3                                      {
+ 223   4                                      stolen_alarm_speech2();
+ 224   4                                      }
+ 225   3                              if(++host_stolen_alarm2_count >= 4)
+ 226   3                                      {
+ 227   4                                      host_stolen_alarm2_count = 0;
+ 228   4                                      host_stolen_alarm2_EN = 0;
+ 229   4                                      stolen_alarm_flag = 0;
+ 230   4                                      sensor_3rdalarm_flag = 0;
+ 231   4                                      }
+ 232   3                              }                       
+ 233   2                      }
+ 234   1              
+ 235   1              if((key_rotate == 1)&&(key_rotated_on_flag == 0)&&(Auto_Mode == 1))
+C51 COMPILER V9.51   MAIN                                                                  09/10/2014 14:03:49 PAGE 5   
 
- 236   3                                      {
- 237   4                                      if(wire_broken_flag == 0)
- 238   4                                              {
- 239   5                                              ComMode_3_Data();
- 240   5                                              }
- 241   4                                      else
- 242   4                                              {
- 243   5                                              ComMode_6_Data();
- 244   5                                              }
- 245   4      
- 246   4                                      stolen_alarm_speech2();
- 247   4                                      }
- 248   3                              if(++host_stolen_alarm2_count >= 4)
- 249   3                                      {
- 250   4                                      host_stolen_alarm2_count = 0;
- 251   4                                      host_stolen_alarm2_EN = 0;
- 252   4                                      stolen_alarm_flag = 0;
- 253   4                                      sensor_3rdalarm_flag = 0;
- 254   4                                      }
- 255   3                              }                       
- 256   2                      }
- 257   1              
- 258   1              // detect whether key is rotated on,  
- 259   1              if((key_rotate == 1)&&(key_rotated_on_flag == 0)&&(IDkey_flag == 1))            
- 260   1                      {                                                                        
- 261   2                      Delay(5);
- 262   2                      // anti-trigger, Delay(5) confirm the key rotation.
- 263   2                      if(key_rotate == 1)
- 264   2                              {
- 265   3                              slave_nearby_operation();                     
- 266   3                              // flag key rotation status
- 267   3                              key_rotated_on_flag = 1;
- 268   3                              
- 269   3                              IDkey_count = 0;
- 270   3                              IDkey_flag = 0;                         
- 271   3                              }
- 272   2                      }
- 273   1                      
- 274   1              // detect whether key is rotated off
- 275   1              if((key_rotate == 0)&&(key_rotated_on_flag == 1))
- 276   1                      {
- 277   2                      if((vibration_flag == 0)&&(wheeled_flag == 0))
- 278   2                              {
- 279   3                              Delay(5);
- 280   3                              if(key_rotate == 0)
- 281   3                                      {
- 282   4                                      // handle with battery status
- 283   4                                      verifybattery(ADC_check_result);
- 284   4                                      // reset key rotation flag
- 285   4                                      key_rotated_on_flag=0;
- 286   4                                      
- 287   4                                      slave_away_operation();
- 288   4                                      }                               
- 289   3                              }
- 290   2                      }
- 291   1              
- 292   1              if((sensor_detect == 0)||(horizontal_sensor == 0))
- 293   1                      {
- 294   2                      vibration_flag = 1;
- 295   2                      vibration_count = 0;
- 296   2                      }       
- 297   1              
-C51 COMPILER V9.51   MAIN                                                                  07/18/2014 08:58:25 PAGE 6   
+ 236   1                      {               
+ 237   2                      Delay(5);
+ 238   2                      if(key_rotate == 1)
+ 239   2                              {
+ 240   3                              // ÉèÖÃ¿ªÔ¿³×ºÍ¹ØÔ¿³×µÄ±êÖ¾Î»
+ 241   3                              key_rotated_on_flag = 1;
+ 242   3                              key_rotated_off_flag = 0;
+ 243   3                              IDkey_count = 0;
+ 244   3                              IDkey_flag = 0;
+ 245   3                              slave_away_flag = 0;
+ 246   3                              key_rotate_count = 31;                  
+ 247   3                              disable_sensor();       
+ 248   3                              }
+ 249   2                      }
+ 250   1                      
+ 251   1              // detect whether key is rotated on,  
+ 252   1              if((key_rotated_on_flag == 1)&&(IDkey_flag == 1)&&(lock_rotate_on_flag == 0)&&(Auto_Mode == 1))         
+ 253   1                      {                                                                        
+ 254   2                      magnet_CW(2000, 4000, 28);
+ 255   2                      IDkey_count = 0;
+ 256   2                      IDkey_flag = 0;
+ 257   2                      
+ 258   2                      slave_nearby_operation();                     
+ 259   2                      lock_rotate_on_flag = 1;
+ 260   2                      lock_rotate_off_flag = 0;
+ 261   2                      key_rotate_count = 31;
+ 262   2                      
+ 263   2                      }
+ 264   1                      
+ 265   1              if((key_rotate == 0)&&(key_rotated_off_flag == 0)&&(Auto_Mode == 1))
+ 266   1                      {
+ 267   2                      Delay(5);
+ 268   2                      if(key_rotate == 0)
+ 269   2                              {
+ 270   3                              // ÉèÖÃ¿ªÔ¿³×ºÍ¹ØÔ¿³×µÄ±êÖ¾Î»
+ 271   3                              key_rotated_on_flag = 0;
+ 272   3                              key_rotated_off_flag = 1;
+ 273   3      
+ 274   3                              key_rotate_count = 31;
+ 275   3                              enable_sensor_delayEN = 1;
+ 276   3                              enable_sensor_delay_count = 0;
+ 277   3                              }               
+ 278   2                      }
+ 279   1      
+ 280   1              if((slave_away_flag == 1)&&(lock_rotate_off_flag == 0)&&(Auto_Mode == 1))
+ 281   1                      {
+ 282   2                      if((vibration_flag == 0)&&(wheeled_flag == 0))
+ 283   2                              {
+ 284   3                              // handle with battery status
+ 285   3                              verifybattery(ADC_check_result);
+ 286   3                              magnet_ACW(6000, 10000);                        
+ 287   3                              
+ 288   3                              // reset key rotation flag
+ 289   3                              slave_away_operation();
+ 290   3                              
+ 291   3                              key_rotate_count = 31;
+ 292   3                              slave_away_flag = 0;
+ 293   3                              lock_rotate_on_flag = 0;
+ 294   3                              lock_rotate_off_flag = 1;
+ 295   3                              IDkey_flag = 0;
+ 296   3                              }
+ 297   2                      }
+C51 COMPILER V9.51   MAIN                                                                  09/10/2014 14:03:49 PAGE 6   
 
- 298   1              if(vibration_flag == 1)
- 299   1                      {
- 300   2                      if(++vibration_count > 2000)
- 301   2                              {
- 302   3                              vibration_flag = 0;
- 303   3                              vibration_count = 0;
- 304   3                              }
- 305   2                      }               
- 306   1              
- 307   1      
- 308   1              if(wheeled_rotate == 0)
- 309   1                      {
- 310   2                      wheeled_flag = 1;
- 311   2                      wheeled_count = 0;
- 312   2                      }
- 313   1              if(wheeled_flag == 1)
- 314   1                      {
- 315   2                      if(++wheeled_count >= 2000)
- 316   2                              {
- 317   3                              wheeled_flag = 0;
- 318   3                              wheeled_count = 0;
- 319   3                  }
- 320   2                      }
- 321   1      
- 322   1      // judge host is fell or raised every 1ms?
- 323   1              if((raised_sensor_detect == 1)&&(fell_sensor_detect == 1))
- 324   1                      {
- 325   2                      // judge vibration sensor is enable?
- 326   2                      if(sensor_EN == 1)      
- 327   2                              {                       
- 328   3                              // sensor trigger status, 0, 1 or 2?
- 329   3                              switch(sensor_trigger_count)
- 330   3                                      {
- 331   4                                      // case 0, it means host is in waiting status. waiting for first touch.
- 332   4                                      case 0:
- 333   4                                              {
- 334   5                                              
- 335   5                                              // judge host been touched and also not in vibration alarm
- 336   5      //                                      if(((sensor_detect == 0)||(horizontal_sensor == 0))&&(stolen_alarm_flag == 0))          
- 337   5                                              if(((sensor_detect == 0)||(horizontal_sensor == 0))&&(stolen_alarm_flag == 0))          
- 338   5                                                      {
- 339   6                                                      // judge LV is more than 2ms, if yes, it means a effective touch
- 340   6                                                      if(++sensor_1ststage_count >= 2)                        
- 341   6                                                              {
- 342   7                                                              sensor_1ststage_count=0;
- 343   7                                                              
- 344   7                                                              // sensor trigge status progress to case 1.
- 345   7                                                              sensor_trigger_count = 1;
- 346   7                                                              // alarm speech for first touoch
- 347   7                                                              host_touch_speech();
- 348   7                                                              }
- 349   6                                                      }
- 350   5                                              else
- 351   5                                                      {
- 352   6                                                      // if no LV, reset the count.
- 353   6                                                      sensor_1ststage_count = 0;
- 354   6                                                      }
- 355   5                                              }
- 356   4                                      break;
- 357   4                                      
- 358   4                                      // waiting for next touch, 
- 359   4                                      case 1:
-C51 COMPILER V9.51   MAIN                                                                  07/18/2014 08:58:25 PAGE 7   
+ 298   1              
+ 299   1              if((sensor_detect == 0)||(horizontal_sensor == 0))
+ 300   1                      {
+ 301   2                      vibration_flag = 1;
+ 302   2                      vibration_count = 0;
+ 303   2                      }       
+ 304   1              
+ 305   1              if(vibration_flag == 1)
+ 306   1                      {
+ 307   2                      if(++vibration_count > 4000)
+ 308   2                              {
+ 309   3                              vibration_flag = 0;
+ 310   3                              vibration_count = 0;
+ 311   3                              }
+ 312   2                      }               
+ 313   1              
+ 314   1      
+ 315   1              if(wheeled_rotate == 1)
+ 316   1                      {
+ 317   2                      wheeled_flag = 1;
+ 318   2                      wheeled_count = 0;
+ 319   2                      }
+ 320   1              if(wheeled_flag == 1)
+ 321   1                      {
+ 322   2                      if(++wheeled_count >= 4000)
+ 323   2                              {
+ 324   3                              wheeled_flag = 0;
+ 325   3                              wheeled_count = 0;
+ 326   3                  }
+ 327   2                      }
+ 328   1      
+ 329   1      // judge host is fell or raised every 1ms?
+ 330   1              if((raised_sensor_detect == 1)&&(fell_sensor_detect == 1))
+ 331   1                      {
+ 332   2                      // judge vibration sensor is enable?
+ 333   2                      if(sensor_EN == 1)      
+ 334   2                              {                       
+ 335   3                              // sensor trigger status, 0, 1 or 2?
+ 336   3                              switch(sensor_trigger_count)
+ 337   3                                      {
+ 338   4                                      // case 0, it means host is in waiting status. waiting for first touch.
+ 339   4                                      case 0:
+ 340   4                                              {
+ 341   5                                              
+ 342   5                                              // judge host been touched and also not in vibration alarm
+ 343   5      //                                      if(((sensor_detect == 0)||(horizontal_sensor == 0))&&(stolen_alarm_flag == 0))          
+ 344   5                                              if(((sensor_detect == 0)||(horizontal_sensor == 0))&&(stolen_alarm_flag == 0))          
+ 345   5                                                      {
+ 346   6                                                      // judge LV is more than 2ms, if yes, it means a effective touch
+ 347   6                                                      if(++sensor_1ststage_count >= 2)                        
+ 348   6                                                              {
+ 349   7                                                              sensor_1ststage_count=0;
+ 350   7                                                              
+ 351   7                                                              // sensor trigge status progress to case 1.
+ 352   7                                                              sensor_trigger_count = 1;
+ 353   7                                                              // alarm speech for first touoch
+ 354   7                                                              host_touch_speech();
+ 355   7                                                              }
+ 356   6                                                      }
+ 357   5                                              else
+ 358   5                                                      {
+ 359   6                                                      // if no LV, reset the count.
+C51 COMPILER V9.51   MAIN                                                                  09/10/2014 14:03:49 PAGE 7   
 
- 360   4                                              {
- 361   5      //                                      if((sensor_detect == 0)||(horizontal_sensor == 0))
- 362   5                                              if((sensor_detect == 0)||(horizontal_sensor == 0))
- 363   5                                                      {
- 364   6                                                      // LV for 2s, means a effective touch             8
- 365   6                                                      if(++sensor_2ndstage_count >= 2)
- 366   6                                                              {
- 367   7                                                              sensor_2ndstage_count = 0;
- 368   7                                                              sensor_trigger_count = 2;
- 369   7                                                              // alarm speech for 2nd touch
- 370   7                                                              host_2ndtouch_speech();
- 371   7                                                              }
- 372   6                                                      }
- 373   5                                              else
- 374   5                                                      {
- 375   6                                                      sensor_2ndstage_count = 0;
- 376   6                                                      }
- 377   5                                              
- 378   5                                              // if there is no touch in 4s, reset sensor trigger status, etc.
- 379   5                                              if(++sensor_2ndstage_time >= 4000)
- 380   5                                                      {
- 381   6                                                      sensor_trigger_count = 0;
+ 360   6                                                      sensor_1ststage_count = 0;
+ 361   6                                                      }
+ 362   5                                              }
+ 363   4                                      break;
+ 364   4                                      
+ 365   4                                      // waiting for next touch, 
+ 366   4                                      case 1:
+ 367   4                                              {
+ 368   5      //                                      if((sensor_detect == 0)||(horizontal_sensor == 0))
+ 369   5                                              if((sensor_detect == 0)||(horizontal_sensor == 0))
+ 370   5                                                      {
+ 371   6                                                      // LV for 2s, means a effective touch             8
+ 372   6                                                      if(++sensor_2ndstage_count >= 2)
+ 373   6                                                              {
+ 374   7                                                              sensor_2ndstage_count = 0;
+ 375   7                                                              sensor_trigger_count = 2;
+ 376   7                                                              // alarm speech for 2nd touch
+ 377   7                                                              host_2ndtouch_speech();
+ 378   7                                                              }
+ 379   6                                                      }
+ 380   5                                              else
+ 381   5                                                      {
  382   6                                                      sensor_2ndstage_count = 0;
- 383   6                                                      sensor_1ststage_count = 0;
- 384   6                                                      sensor_2ndstage_time = 0;
- 385   6                                                      }
- 386   5                                              }
- 387   4                                      break;
- 388   4                                      
- 389   4                                      // waiting for 3rd touch
- 390   4                                      case 2:
- 391   4                                              {
- 392   5      //                                      if((sensor_detect == 0)||(horizontal_sensor == 0))
- 393   5                                              if((sensor_detect == 0)||(horizontal_sensor == 0))
- 394   5                                                      {
- 395   6                                                      // 2s LV is a effective touch
- 396   6                                                      if(++sensor_3rdstage_count >= 1)
- 397   6                                                              {
- 398   7                                                              sensor_3rdstage_count = 0;
- 399   7                                                              // stolen alarm speech enable
- 400   7                                                              host_stolen_alarm1_EN = 1;
- 401   7                                                              host_stolen_alarm2_EN = 1;                                              
- 402   7                                                              sensor_3rdalarm_flag = 1;                                                       
- 403   7                                                              }
- 404   6                                                      }
- 405   5                                              else
- 406   5                                                      {
- 407   6                                                      sensor_3rdstage_count = 0;
- 408   6                                                      }
- 409   5                                              
- 410   5                                              // if there is no touch in 4s, reset all.
- 411   5                                              if(++sensor_3rdstage_time >= 4000)
- 412   5                                                      {
- 413   6                                                      sensor_trigger_count = 0;
- 414   6                                                      sensor_1ststage_count = 0;
- 415   6                                                      sensor_2ndstage_count = 0;
- 416   6                                                      sensor_2ndstage_time = 0;
- 417   6                                                      sensor_3rdstage_time = 0;
- 418   6                                                      sensor_3rdstage_interval = 800;
- 419   6                                                      sensor_3rdstage_count = 0;
- 420   6                                                      sensor_3rdstage_effcount = 0;                                   
- 421   6                                                      }
-C51 COMPILER V9.51   MAIN                                                                  07/18/2014 08:58:25 PAGE 8   
+ 383   6                                                      }
+ 384   5                                              
+ 385   5                                              // if there is no touch in 4s, reset sensor trigger status, etc.
+ 386   5                                              if(++sensor_2ndstage_time >= 4000)
+ 387   5                                                      {
+ 388   6                                                      sensor_trigger_count = 0;
+ 389   6                                                      sensor_2ndstage_count = 0;
+ 390   6                                                      sensor_1ststage_count = 0;
+ 391   6                                                      sensor_2ndstage_time = 0;
+ 392   6                                                      }
+ 393   5                                              }
+ 394   4                                      break;
+ 395   4                                      
+ 396   4                                      // waiting for 3rd touch
+ 397   4                                      case 2:
+ 398   4                                              {
+ 399   5      //                                      if((sensor_detect == 0)||(horizontal_sensor == 0))
+ 400   5                                              if((sensor_detect == 0)||(horizontal_sensor == 0))
+ 401   5                                                      {
+ 402   6                                                      // 2s LV is a effective touch
+ 403   6                                                      if(++sensor_3rdstage_count >= 1)
+ 404   6                                                              {
+ 405   7                                                              sensor_3rdstage_count = 0;
+ 406   7                                                              // stolen alarm speech enable
+ 407   7                                                              host_stolen_alarm1_EN = 1;
+ 408   7                                                              host_stolen_alarm2_EN = 1;                                              
+ 409   7                                                              sensor_3rdalarm_flag = 1;                                                       
+ 410   7                                                              }
+ 411   6                                                      }
+ 412   5                                              else
+ 413   5                                                      {
+ 414   6                                                      sensor_3rdstage_count = 0;
+ 415   6                                                      }
+ 416   5                                              
+ 417   5                                              // if there is no touch in 4s, reset all.
+ 418   5                                              if(++sensor_3rdstage_time >= 4000)
+ 419   5                                                      {
+ 420   6                                                      sensor_trigger_count = 0;
+ 421   6                                                      sensor_1ststage_count = 0;
+C51 COMPILER V9.51   MAIN                                                                  09/10/2014 14:03:49 PAGE 8   
 
- 422   5                                              }
- 423   4                                      break;
- 424   4                                      }
- 425   3                              
- 426   3                              // judge the wire broken, if yes, it means someone has cut the wire of magnet lock
- 427   3                              if((wire_broken == 0) && (wire_broken_count < 51))  
- 428   3                                      {
- 429   4                                      if(++wire_broken_count > 50)
- 430   4                                              {
- 431   5                                              host_stolen_alarm1_EN = 1;
- 432   5                                              host_stolen_alarm2_EN = 1;      
- 433   5                                              wire_broken_count = 51;
- 434   5                                              wire_broken_flag = 1;
- 435   5                                              }
- 436   4                                      }
- 437   3                              else if((wire_broken == 1)&&(sensor_3rdalarm_flag == 0))
- 438   3                                      {
- 439   4                                      wire_broken_count = 0;
- 440   4                                      host_stolen_alarm1_EN = 0;
- 441   4                                      host_stolen_alarm2_EN = 0;
- 442   4                                      }
- 443   3                              
- 444   3                              // judge whether battery has been stolen, 0.4V/4V
- 445   3                              if(ADC_check_result < 0x100)
- 446   3                                      {
- 447   4                                      battery_stolen_EN = 1;
- 448   4                                      }
- 449   3                              else if(ADC_check_result > 0x200)
- 450   3                                      {
- 451   4                                      battery_stolen_EN = 0;
- 452   4                                      battery_stolen_count = 0;
- 453   4                                      }                       
- 454   3                              }
- 455   2                      }
- 456   1              
- 457   1              // judge whether position sensor is enable
- 458   1              if(position_sensor_EN==1)               
- 459   1                      {
- 460   2                      // judge whether there is a LV
- 461   2                      if(raised_sensor_detect == 0)   
- 462   2                              {
- 463   3                              // LV > 0.5s means a effective input
- 464   3                              if(++raise_wire_time >= 3)
- 465   3                                      {
- 466   4                                      // flag raised, and reset fell
- 467   4                                      raised_flag=1;
- 468   4                                      fell_flag=0;
- 469   4                                      raise_wire_time = 11;
- 470   4                                      // judge whether there once been a raised or fell.
- 471   4                                      if(raised_fell_once_flag == 0)
- 472   4                                              {
- 473   5                                              // if no, flag raised and fell flag
- 474   5                                              raised_fell_flag = 1;                                   
- 475   5                                              }
- 476   4                                      }               
- 477   3                              }
- 478   2                      else
- 479   2                              {
- 480   3                              raised_flag=0;
- 481   3                              raised_alarm_count=0;
- 482   3                              raise_wire_time=0;
- 483   3                              raised_fell_flag = 0;
-C51 COMPILER V9.51   MAIN                                                                  07/18/2014 08:58:25 PAGE 9   
+ 422   6                                                      sensor_2ndstage_count = 0;
+ 423   6                                                      sensor_2ndstage_time = 0;
+ 424   6                                                      sensor_3rdstage_time = 0;
+ 425   6                                                      sensor_3rdstage_interval = 800;
+ 426   6                                                      sensor_3rdstage_count = 0;
+ 427   6                                                      sensor_3rdstage_effcount = 0;                                   
+ 428   6                                                      }
+ 429   5                                              }
+ 430   4                                      break;
+ 431   4                                      }
+ 432   3                              
+ 433   3                              // judge the wire broken, if yes, it means someone has cut the wire of magnet lock
+ 434   3                              if((wire_broken == 0) && (wire_broken_count < 51))  
+ 435   3                                      {
+ 436   4                                      if(++wire_broken_count > 50)
+ 437   4                                              {
+ 438   5                                              host_stolen_alarm1_EN = 1;
+ 439   5                                              host_stolen_alarm2_EN = 1;      
+ 440   5                                              wire_broken_count = 51;
+ 441   5                                              wire_broken_flag = 1;
+ 442   5                                              }
+ 443   4                                      }
+ 444   3                              else if((wire_broken == 1)&&(sensor_3rdalarm_flag == 0))
+ 445   3                                      {
+ 446   4                                      wire_broken_count = 0;
+ 447   4                                      host_stolen_alarm1_EN = 0;
+ 448   4                                      host_stolen_alarm2_EN = 0;
+ 449   4                                      }
+ 450   3                              
+ 451   3                              // judge whether battery has been stolen, 0.4V/4V
+ 452   3                              if(ADC_check_result < 0x100)
+ 453   3                                      {
+ 454   4                                      battery_stolen_EN = 1;
+ 455   4                                      }
+ 456   3                              else if(ADC_check_result > 0x200)
+ 457   3                                      {
+ 458   4                                      battery_stolen_EN = 0;
+ 459   4                                      battery_stolen_count = 0;
+ 460   4                                      }                       
+ 461   3                              }
+ 462   2                      }
+ 463   1              
+ 464   1              // judge whether position sensor is enable
+ 465   1              if(position_sensor_EN==1)               
+ 466   1                      {
+ 467   2                      // judge whether there is a LV
+ 468   2                      if(raised_sensor_detect == 0)   
+ 469   2                              {
+ 470   3                              // LV > 0.5s means a effective input
+ 471   3                              if(++raise_wire_time >= 3)
+ 472   3                                      {
+ 473   4                                      // flag raised, and reset fell
+ 474   4                                      raised_flag=1;
+ 475   4                                      fell_flag=0;
+ 476   4                                      raise_wire_time = 11;
+ 477   4                                      // judge whether there once been a raised or fell.
+ 478   4                                      if(raised_fell_once_flag == 0)
+ 479   4                                              {
+ 480   5                                              // if no, flag raised and fell flag
+ 481   5                                              raised_fell_flag = 1;                                   
+ 482   5                                              }
+ 483   4                                      }               
+C51 COMPILER V9.51   MAIN                                                                  09/10/2014 14:03:49 PAGE 9   
 
  484   3                              }
- 485   2            // judge whether there is a LV
- 486   2                      if(fell_sensor_detect==0)
- 487   2                              {
- 488   3                              // LV > 0.5s means a effective input
- 489   3                              if(++fell_wire_time >= 3)       
- 490   3                                      {
- 491   4                                      // flag fell, and reset raised
- 492   4                                      fell_flag=1;                    
- 493   4                                      raised_flag=0;
- 494   4                                      fell_wire_time = 11;
- 495   4                                      // judge whether there once been a raised or fell
- 496   4                                      if(raised_fell_once_flag == 0)
- 497   4                                              {
- 498   5                                              raised_fell_flag = 1;                                   
- 499   5                                              }
- 500   4                                      }               
- 501   3                              }
- 502   2                      else
- 503   2                              {
- 504   3                              fell_flag=0;
- 505   3                              fell_alarm_count=0;
- 506   3                              fell_wire_time=0;
- 507   3                              raised_fell_flag = 0;
+ 485   2                      else
+ 486   2                              {
+ 487   3                              raised_flag=0;
+ 488   3                              raised_alarm_count=0;
+ 489   3                              raise_wire_time=0;
+ 490   3                              raised_fell_flag = 0;
+ 491   3                              }
+ 492   2            // judge whether there is a LV
+ 493   2                      if(fell_sensor_detect==0)
+ 494   2                              {
+ 495   3                              // LV > 0.5s means a effective input
+ 496   3                              if(++fell_wire_time >= 3)       
+ 497   3                                      {
+ 498   4                                      // flag fell, and reset raised
+ 499   4                                      fell_flag=1;                    
+ 500   4                                      raised_flag=0;
+ 501   4                                      fell_wire_time = 11;
+ 502   4                                      // judge whether there once been a raised or fell
+ 503   4                                      if(raised_fell_once_flag == 0)
+ 504   4                                              {
+ 505   5                                              raised_fell_flag = 1;                                   
+ 506   5                                              }
+ 507   4                                      }               
  508   3                              }
- 509   2                      }
- 510   1              
- 511   1              // judge whether raised or fell, if yes, reset all after 10s.
- 512   1              if(raised_fell_flag == 1)
- 513   1                      {
- 514   2                      if(++raised_fell_number >= 4000)
- 515   2                              {
- 516   3                              raised_fell_flag = 0;
- 517   3                              raised_fell_number = 0;
- 518   3                              raised_fell_once_flag = 1;
- 519   3                              
- 520   3                              sensor_trigger_count = 0;
- 521   3                              sensor_1ststage_count = 0;
- 522   3                              sensor_2ndstage_count = 0;
- 523   3                              sensor_2ndstage_time = 0;
- 524   3                              sensor_3rdstage_time = 0;
- 525   3                              sensor_3rdstage_interval = 800;
- 526   3                              sensor_3rdstage_count = 0;
- 527   3                              sensor_3rdstage_effcount = 0;                                   
- 528   3                              }
- 529   2                      }
- 530   1                      
- 531   1              // detect the horizontal sensor
- 532   1              if(((horizontal_sensor == 0)||(sensor_detect == 0))&&(horizontal_vibration_count > 5000))
- 533   1                      {
- 534   2                      Delay(3);
- 535   2                      if((horizontal_sensor == 0)||(sensor_detect == 0))
- 536   2                              {
- 537   3                              horizontal_vibration = 1;
- 538   3                              horizontal_vibration_count = 0;
- 539   3                              }
- 540   2                      }
- 541   1              if(++horizontal_vibration_count >= 5000)
- 542   1                      {
- 543   2                      horizontal_vibration_count = 5001;
- 544   2                      horizontal_vibration = 0;
- 545   2                      }
-C51 COMPILER V9.51   MAIN                                                                  07/18/2014 08:58:25 PAGE 10  
+ 509   2                      else
+ 510   2                              {
+ 511   3                              fell_flag=0;
+ 512   3                              fell_alarm_count=0;
+ 513   3                              fell_wire_time=0;
+ 514   3                              raised_fell_flag = 0;
+ 515   3                              }
+ 516   2                      }
+ 517   1              
+ 518   1              // judge whether raised or fell, if yes, reset all after 10s.
+ 519   1              if(raised_fell_flag == 1)
+ 520   1                      {
+ 521   2                      if(++raised_fell_number >= 4000)
+ 522   2                              {
+ 523   3                              raised_fell_flag = 0;
+ 524   3                              raised_fell_number = 0;
+ 525   3                              raised_fell_once_flag = 1;
+ 526   3                              
+ 527   3                              sensor_trigger_count = 0;
+ 528   3                              sensor_1ststage_count = 0;
+ 529   3                              sensor_2ndstage_count = 0;
+ 530   3                              sensor_2ndstage_time = 0;
+ 531   3                              sensor_3rdstage_time = 0;
+ 532   3                              sensor_3rdstage_interval = 800;
+ 533   3                              sensor_3rdstage_count = 0;
+ 534   3                              sensor_3rdstage_effcount = 0;                                   
+ 535   3                              }
+ 536   2                      }
+ 537   1                      
+ 538   1              // detect the horizontal sensor
+ 539   1              if(((horizontal_sensor == 0)||(sensor_detect == 0))&&(horizontal_vibration_count > 5000))
+ 540   1                      {
+ 541   2                      Delay(3);
+ 542   2                      if((horizontal_sensor == 0)||(sensor_detect == 0))
+ 543   2                              {
+ 544   3                              horizontal_vibration = 1;
+ 545   3                              horizontal_vibration_count = 0;
+C51 COMPILER V9.51   MAIN                                                                  09/10/2014 14:03:49 PAGE 10  
 
- 546   1              }
- 547          
- 548          /*-----------------------------------------------
- 549                  ÓÃUART¶Ë¿Ú½ÓÊÕÊý¾Ý£¬9600²¨ÌØÂÊ£¬ÊÕµ½ºó±íÊ¾
- 550                  ÈÏÖ¤ÒÑÍ¨¹ý¡£
- 551          void uart_isr() interrupt 4 //ÖÐ¶Ï½ÓÊÕÊý¾Ý
- 552                  {
- 553                  if(RI)
- 554                          {
- 555                          RI=0;
- 556          
- 557                          // assign one byte to buffer[i] 
- 558                          received_data_buffer[data_count] = SBUF;
- 559                          
- 560                          // judge whether buffer[0] is CmdHead
- 561                          if((data_count == 0) && (received_data_buffer[0] == IDkey0))
- 562                                  {
- 563                                  data_count = 1;
- 564                                  }
- 565                          else if((data_count == 1) && (received_data_buffer[1] == IDkey1))
- 566                                  {
- 567                                  data_count = 2;
- 568                                  }
- 569                          else if((data_count == 2) && (received_data_buffer[2] == IDkey2))
- 570                                  {
- 571                                  data_count = 3;
- 572                                  }
- 573                          else if((data_count == 3) && (received_data_buffer[3] == IDkey3))
- 574                                  {
- 575                                  data_count = 4;
- 576                                  }
- 577                          else if((data_count == 4) && (received_data_buffer[4] == IDkey4))
- 578                                  {
- 579                                  data_count = 5;
- 580                                  }
- 581                          else if((data_count == 5) && (received_data_buffer[5] == IDkey5))
- 582                                  {
- 583                                  data_count = 0; 
- 584                                  IDkey_flag = 1;
- 585                                  IDkey_count = 0;
- 586                                  disable_sensor();
+ 546   3                              }
+ 547   2                      }
+ 548   1              if(++horizontal_vibration_count >= 5000)
+ 549   1                      {
+ 550   2                      horizontal_vibration_count = 5001;
+ 551   2                      horizontal_vibration = 0;
+ 552   2                      }
+ 553   1              }
+ 554          
+ 555          /*-----------------------------------------------
+ 556                  ÓÃUART¶Ë¿Ú½ÓÊÕÊý¾Ý£¬9600²¨ÌØÂÊ£¬ÊÕµ½ºó±íÊ¾
+ 557                  ÈÏÖ¤ÒÑÍ¨¹ý¡£
+ 558          void uart_isr() interrupt 4 //ÖÐ¶Ï½ÓÊÕÊý¾Ý
+ 559                  {
+ 560                  if(RI)
+ 561                          {
+ 562                          RI=0;
+ 563          
+ 564                          // assign one byte to buffer[i] 
+ 565                          received_data_buffer[data_count] = SBUF;
+ 566                          
+ 567                          // judge whether buffer[0] is CmdHead
+ 568                          if((data_count == 0) && (received_data_buffer[0] == IDkey0))
+ 569                                  {
+ 570                                  data_count = 1;
+ 571                                  }
+ 572                          else if((data_count == 1) && (received_data_buffer[1] == IDkey1))
+ 573                                  {
+ 574                                  data_count = 2;
+ 575                                  }
+ 576                          else if((data_count == 2) && (received_data_buffer[2] == IDkey2))
+ 577                                  {
+ 578                                  data_count = 3;
+ 579                                  }
+ 580                          else if((data_count == 3) && (received_data_buffer[3] == IDkey3))
+ 581                                  {
+ 582                                  data_count = 4;
+ 583                                  }
+ 584                          else if((data_count == 4) && (received_data_buffer[4] == IDkey4))
+ 585                                  {
+ 586                                  data_count = 5;
  587                                  }
- 588                          else 
+ 588                          else if((data_count == 5) && (received_data_buffer[5] == IDkey5))
  589                                  {
- 590                                  data_count = 0;
- 591                                  }
- 592                          }
- 593                  }
- 594          -----------------------------------------------*/
- 595          
- 596          /*--------------------------------------------------------------------
- 597                  timerT1()
- 598                  ¶¨Ê±Æ÷1Ã¿´ÎÒç³öºóÖ´ÐÐµÄ²Ù×÷£¬µÍËÙÂÊÄ£Ê½½ÓÊÕ
- 599                  Êý¾Ý¡£
- 600          --------------------------------------------------------------------*/
- 601          
- 602          void timerT1() interrupt interrupt_timer_1_overflow
- 603                  {
- 604   1         // reload timer1
- 605   1              TH1 = timer1_8H;                                
- 606   1              TL1 = timer1_8L;
- 607   1              
-C51 COMPILER V9.51   MAIN                                                                  07/18/2014 08:58:25 PAGE 11  
+ 590                                  data_count = 0; 
+ 591                                  IDkey_flag = 1;
+ 592                                  IDkey_count = 0;
+ 593                                  disable_sensor();
+ 594                                  }
+ 595                          else 
+ 596                                  {
+ 597                                  data_count = 0;
+ 598                                  }
+ 599                          }
+ 600                  }
+ 601          -----------------------------------------------*/
+ 602          
+ 603          /*--------------------------------------------------------------------
+ 604                  timerT1()
+ 605                  ¶¨Ê±Æ÷1Ã¿´ÎÒç³öºóÖ´ÐÐµÄ²Ù×÷£¬µÍËÙÂÊÄ£Ê½½ÓÊÕ
+ 606                  Êý¾Ý¡£
+ 607          --------------------------------------------------------------------*/
+C51 COMPILER V9.51   MAIN                                                                  09/10/2014 14:03:49 PAGE 11  
 
- 608   1              // receive a tyte
- 609   1              receive_byte();
- 610   1              
- 611   1              // receive a word after every byte
- 612   1              receive_word();
- 613   1              
- 614   1              // judge whether a byte has received successfully
- 615   1              if(receive_data_finished_flag == 1)
- 616   1                      {
- 617   2                      receive_data_finished_flag = 0;
- 618   2                      // judge which mode is received.
- 619   2                      switch(received_data_buffer[2])                 
- 620   2                              {
- 621   3                              case ComMode_1:  
- 622   3                                      {
- 623   4                                      IDkey_flag = 1;
- 624   4                                      IDkey_count = 0;
- 625   4                                      disable_sensor();
- 626   4                                      }
- 627   3                              break;
- 628   3                              }
- 629   2                      }
- 630   1              }
- 631          
- 632          
- 633          /*---------------------------------------------------
- 634                  end of file
- 635          ----------------------------------------------------*/
+ 608          
+ 609          void timerT1() interrupt interrupt_timer_1_overflow
+ 610                  {
+ 611   1         // reload timer1
+ 612   1              TH1 = timer1_8H;                                
+ 613   1              TL1 = timer1_8L;
+ 614   1              
+ 615   1              // receive a tyte
+ 616   1              receive_byte();
+ 617   1              
+ 618   1              // receive a word after every byte
+ 619   1              receive_word();
+ 620   1              
+ 621   1              // judge whether a byte has received successfully
+ 622   1              if(receive_data_finished_flag == 1)
+ 623   1                      {
+ 624   2                      receive_data_finished_flag = 0;
+ 625   2                      // judge which mode is received.
+ 626   2                      switch(received_data_buffer[2])                 
+ 627   2                              {
+ 628   3                              case ComMode_1:  
+ 629   3                                      {
+ 630   4                                      IDkey_flag = 1;
+ 631   4                                      IDkey_count = 0;
+ 632   4                                      disable_sensor();
+ 633   4                                      }
+ 634   3                              break;
+ 635   3                              }
+ 636   2                      }
+ 637   1              }
+ 638          
+ 639          
+ 640          /*---------------------------------------------------
+ 641                  end of file
+ 642          ----------------------------------------------------*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1066    ----
+   CODE SIZE        =   1117    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     48    ----
+   DATA SIZE        =     49    ----
    IDATA SIZE       =   ----    ----
-   BIT SIZE         =     18    ----
+   BIT SIZE         =     23    ----
 END OF MODULE INFORMATION.
 
 

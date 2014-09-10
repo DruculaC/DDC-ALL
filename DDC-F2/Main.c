@@ -93,7 +93,7 @@ void main()
 	PS = 1;
 	EA = 1;
 
-	P10=1;
+	P10 = 1;
 	
 	transmiter_EN = 0;
 	// 初始化完毕后，开始测试程序

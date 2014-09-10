@@ -41,7 +41,6 @@ bit raised_fell_flag = 0;					//倒地或者抬起触发后，此标志位置1
 tByte sensor_trigger_count=0;		//传感器触发计数
 tWord sensor_2ndstage_time=0;		//传感器进入第二阶段后流逝时间的计数
 tByte sensor_1ststage_count=0;	//传感器第一阶段判断低电平的计数
-tByte nearby_away_interval = 0;		//附机离开和靠近时，语音提示和开关锁的时间间隔
 
 tByte raised_alarm_count = 0;    //主机被抬起后，向附机发出报警信号的次数
 tByte fell_alarm_count=0;        //主机倒地后，向附机发出报警信号的次数
@@ -58,7 +57,8 @@ tByte fell_wire_time=0;          //倒地检测线，检测低电平的时间
 tByte raise_wire_time=0;			//抬起检测线，检测低电平的时间
 tWord raised_fell_number = 0;				//倒地或者抬起出发后，计数，到达一定数值后，将其与标志位一起清零。
 bit raised_fell_once_flag = 0;			//raised_fell_flag是否曾经标志过，如果标志过则置1.然后主机被恢复倒地或者恢复抬起时，此标志位复位。
-tByte key_rotated_on_flag=0;			//电动车开启关闭标志位，1表示电动车开启了，0表示电动车关闭了
+tByte key_rotated_on_flag = 1;			//电动车开启关闭标志位，1表示电动车开启了，0表示电动车关闭了
+tByte key_rotated_off_flag=0;			//电动车关闭标志位，1表示电动车开启了，0表示电动车关闭了
 tWord ADC_check_result = 0;		//作为AD检测值
 tByte wire_broken_count = 0;		// 作为断线后的时间检测
 bit battery_stolen_EN = 0;			// 作为电池被盗的使能端
@@ -76,6 +76,12 @@ tByte enable_sensor_delay_count = 0;		// 传感器延迟的时间
 bit sensor_3rdalarm_flag = 0;
 bit wheeled_flag = 0;
 tWord wheeled_count = 0;
+tByte key_rotate_count = 0;
+bit key_rotate_flag = 0;
+bit lock_rotate_on_flag = 1;
+bit lock_rotate_off_flag = 0;
+bit slave_away_flag = 1;
+bit Auto_Mode = 1;		//自动开关锁模式打开，每次收到ComMode_8时，手动和自动切换
 
 
 void main()
@@ -111,9 +117,8 @@ void main()
 	
 	// turn off transmitter, turn on receiver
 	transmiter_EN = 1;
-	receiver_EN = 0;
+	receiver_EN = 1;
 
-	nearby_away_interval = 6;			//初始化使附机和主机开关机的计数为可以执行的状态
 	
 	// initialize the magnet, 
 	MagentControl_1 = 1;
@@ -122,6 +127,7 @@ void main()
 	transmiter_power = 1; 
    
 	wire_broken = 1;
+	TR0 = 1;
 	
 	// lock the external motor, 防止锁还没完全打开的时候，车手加电导致轮子与锁的告诉碰撞。 
 	motor_lock = 1;
@@ -158,42 +164,31 @@ void timer0() interrupt interrupt_timer_0_overflow
 		// detect the battery voltage
 		ADC_check_result = GetADCResult(6);	
 		
-		// if fell and raised flag is 1, send alarm signal every 2s.
-		if((fell_flag==1)&&(fell_alarm_count<5))
+		if(++key_rotate_count < 1)		
 			{
-			ComMode_5_Data();
-			fell_alarm_count++;
-			}
-		if((raised_flag==1)&&(raised_alarm_count<5))		
-			{
-			ComMode_4_Data();
-			raised_alarm_count++;
-			}
-			
-		if((battery_stolen_EN == 1)&&(battery_stolen_count < 4))
-			{
-			if(key_rotate == 0)
+			if((key_rotated_on_flag == 1)||(key_rotated_off_flag == 1))
 				{
-				ComMode_2_Data();
-				battery_stolen_speech();
-				battery_stolen_count++;
+				ComMode_Data(ComMode_1, 28);				
 				}
 			}
-		
-		if(IDkey_flag == 1)
-			{
-			if(++IDkey_count >= 15)
+		else
+			key_rotate_count = 31;
+			
+//		if(lock_rotate_off_flag == 0)
+//			{
+			if(++IDkey_count > 4)
 				{
-				IDkey_count = 0;
-				IDkey_flag = 0;
-				if(key_rotated_on_flag == 0)
+				IDkey_count = 8;
+				slave_away_flag = 1;
+				if((enable_sensor_delayEN == 0)&&(lock_rotate_off_flag == 1))
 					{
-					enable_sensor();					
+					enable_sensor_delayEN = 1;
+					enable_sensor_delay_count = 0;
 					}
 				}			
-			}
+//			}
 									
-		if((enable_sensor_delayEN == 1)&&(key_rotate == 0))
+		if((enable_sensor_delayEN == 1)&&(lock_rotate_off_flag == 1))
 			{
 			if(++enable_sensor_delay_count >= 5)
 				{
@@ -210,15 +205,6 @@ void timer0() interrupt interrupt_timer_0_overflow
 			stolen_alarm_flag = 1;
 			if(key_rotate == 0)
 				{
-				if(wire_broken_flag == 0)
-					{
-					ComMode_3_Data();                                                                  
-					}
-				else
-					{                                                                     
-					ComMode_6_Data();
-					}
-					
 				stolen_alarm_speech1();
 				}
 			if(++host_stolen_alarm1_count >= 4)
@@ -234,15 +220,6 @@ void timer0() interrupt interrupt_timer_0_overflow
 			stolen_alarm_flag = 1;
 			if(key_rotate == 0)
 				{
-				if(wire_broken_flag == 0)
-					{
-					ComMode_3_Data();
-					}
-				else
-					{
-					ComMode_6_Data();
-					}
-
 				stolen_alarm_speech2();
 				}
 			if(++host_stolen_alarm2_count >= 4)
@@ -255,37 +232,67 @@ void timer0() interrupt interrupt_timer_0_overflow
 			}			
 		}
 	
-	// detect whether key is rotated on,  
-	if((key_rotate == 1)&&(key_rotated_on_flag == 0)&&(IDkey_flag == 1))		
-		{                                                                        
+	if((key_rotate == 1)&&(key_rotated_on_flag == 0)&&(Auto_Mode == 1))
+		{		
 		Delay(5);
-		// anti-trigger, Delay(5) confirm the key rotation.
 		if(key_rotate == 1)
 			{
-			slave_nearby_operation();                     
-			// flag key rotation status
+			// 设置开钥匙和关钥匙的标志位
 			key_rotated_on_flag = 1;
-			
+			key_rotated_off_flag = 0;
 			IDkey_count = 0;
-			IDkey_flag = 0;				
+			IDkey_flag = 0;
+			slave_away_flag = 0;
+			key_rotate_count = 31;			
+			disable_sensor();	
 			}
 		}
 		
-	// detect whether key is rotated off
-	if((key_rotate == 0)&&(key_rotated_on_flag == 1))
+	// detect whether key is rotated on,  
+	if((key_rotated_on_flag == 1)&&(IDkey_flag == 1)&&(lock_rotate_on_flag == 0)&&(Auto_Mode == 1))		
+		{                                                                        
+		magnet_CW(2000, 4000, 28);
+		IDkey_count = 0;
+		IDkey_flag = 0;
+		
+		slave_nearby_operation();                     
+		lock_rotate_on_flag = 1;
+		lock_rotate_off_flag = 0;
+		key_rotate_count = 31;
+		
+		}
+		
+	if((key_rotate == 0)&&(key_rotated_off_flag == 0)&&(Auto_Mode == 1))
+		{
+		Delay(5);
+		if(key_rotate == 0)
+			{
+			// 设置开钥匙和关钥匙的标志位
+			key_rotated_on_flag = 0;
+			key_rotated_off_flag = 1;
+
+			key_rotate_count = 31;
+			enable_sensor_delayEN = 1;
+			enable_sensor_delay_count = 0;
+			}		
+		}
+
+	if((slave_away_flag == 1)&&(lock_rotate_off_flag == 0)&&(Auto_Mode == 1))
 		{
 		if((vibration_flag == 0)&&(wheeled_flag == 0))
 			{
-			Delay(5);
-			if(key_rotate == 0)
-				{
-				// handle with battery status
-				verifybattery(ADC_check_result);
-				// reset key rotation flag
-				key_rotated_on_flag=0;
-				
-				slave_away_operation();
-				}				
+			// handle with battery status
+			verifybattery(ADC_check_result);
+			magnet_ACW(6000, 10000);			
+			
+			// reset key rotation flag
+			slave_away_operation();
+			
+			key_rotate_count = 31;
+			slave_away_flag = 0;
+			lock_rotate_on_flag = 0;
+			lock_rotate_off_flag = 1;
+			IDkey_flag = 0;
 			}
 		}
 	
@@ -297,7 +304,7 @@ void timer0() interrupt interrupt_timer_0_overflow
 	
 	if(vibration_flag == 1)
 		{
-		if(++vibration_count > 2000)
+		if(++vibration_count > 4000)
 			{
 			vibration_flag = 0;
 			vibration_count = 0;
@@ -305,14 +312,14 @@ void timer0() interrupt interrupt_timer_0_overflow
 		}		
 	
 
-	if(wheeled_rotate == 0)
+	if(wheeled_rotate == 1)
 		{
 		wheeled_flag = 1;
 		wheeled_count = 0;
 		}
 	if(wheeled_flag == 1)
 		{
-		if(++wheeled_count >= 2000)
+		if(++wheeled_count >= 4000)
 			{
 			wheeled_flag = 0;
 			wheeled_count = 0;

@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   TIMER                                                                 09/04/2014 10:05:25 PAGE 1   
+C51 COMPILER V9.51   TIMER                                                                 09/30/2014 11:22:46 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE TIMER
@@ -62,7 +62,7 @@ line level    source
   51   1              TL1 = timer1_8L;
   52   1      
   53   1              ET0 = 1;
-C51 COMPILER V9.51   TIMER                                                                 09/04/2014 10:05:25 PAGE 2   
+C51 COMPILER V9.51   TIMER                                                                 09/30/2014 11:22:46 PAGE 2   
 
   54   1              TR0 = 0;
   55   1              ET1 = 1;
@@ -85,7 +85,7 @@ line level    source
   72   1              timer0_8H = (tByte) (timer0_16 / 256);
   73   1              timer0_8L = (tByte) (timer0_16 % 256);
   74   1              TMOD = 0x21;
-  75   1              TR0=1;
+  75   1              TR0=0;
   76   1      }
   77          
   78          /*---------------------------------------------------------------------

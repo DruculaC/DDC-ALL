@@ -36,7 +36,6 @@ extern tByte battery_stolen_count;
 extern bit sensor_EN;
 extern tByte enable_sensor_delay_count;		
 extern bit enable_sensor_delayEN;
-extern bit Auto_Mode;
 
 /*-------------------------------------------------------
 	magnet_CW()
@@ -103,12 +102,9 @@ void disable_sensor(void)
 	
 	enable_sensor_delayEN = 0;
 	enable_sensor_delay_count = 0;
-	if(Auto_Mode == 1)
-		{
-		// reset battery stolen
-		battery_stolen_EN = 0;
-		battery_stolen_count = 0;	
-		}
+	// reset battery stolen
+	battery_stolen_EN = 0;
+	battery_stolen_count = 0;	
 	}
 	
 /*--------------------------------------------------------
@@ -134,7 +130,7 @@ void enable_sensor(void)
 void Moto_Vibration(void)
 	{
 	Moto_EN=0;				
-	Delay(10);
+	Delay(5);
 	Moto_EN=1;
 	}
 	

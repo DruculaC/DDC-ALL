@@ -85,6 +85,12 @@ bit Mode_select = 0;	// 模式选择，0表示自动模式，1表示手动模式
 bit powersave_enable = 0;
 tWord receiver_EN_count = 0;
 
+bit itrpt_EN = 1;
+tByte itrpt_count = 0;
+bit idle_EN = 1;
+
+bit Auto_transmit = 0;			// 0表示非自动发送数据，1表示自动发送数据进行认证
+
 /*--------------------------------------------------------------*/
 
 void main(void)
@@ -93,38 +99,42 @@ void main(void)
 	InitTimer(50, 100);
 
 	// 键盘中断初始化
-	Mode_detect = 1;
-	KBLS1 |= 0x01;
-	KBLS0 |= 0x01;
-	KBIF &= 0xe0;
-	KBIE |= 0x01;
+	press_open_button = 1;
+	press_close_button = 1;
+	
+	KBLS1 |= 0x03;
+	KBLS0 |= 0x03;
+	KBIF &= 0xfc;
+	KBIE |= 0x03;
 	EA = 1;
 
 	Moto_EN = 1;		//初始化，关闭马达
 	transmit_wire = 1;
 	voice_EN = 0;		  	//开机时，将功放关闭
 	
-	ADC_check_result = GetADCResult(6);	//上电时，电池电量检测一次
+	ADC_check_result = GetADCResult(6);		//上电时，电池电量检测一次
 	
 	stolen_alarm_count = 0;			//清报警计数器
 	stolen_alarm_flag = 0;			//清报警标志
 
-	transmiter_EN = 1;		// turn off the transmitter
+	transmiter_EN = 0;		// turn off the transmitter
 	receiver_EN = 0;		// turn on the receiver
+
+	transceiver_power_enable = 1;         // 上电时无线模块电源关闭
+	
 	Delay(3);
-	
-	
+    TR0 = 1;
+
 	while(1)
-		{
-		if(powersave_enable == 1)
+		{				
+		if(idle_EN == 1)
 			{
-			receiver_EN = 1;
 			EKB = 1;
-			powersave_enable = 0;
-			PCON |= 0x02;    // Enter power-save mode (generic 8051 version)
+			idle_EN = 0;
+			PCON |= 0x02;			
 			}
 		
-		sEOS_Go_To_Sleep();			
+//		sEOS_Go_To_Sleep();			
 		}  
 	}
 
@@ -143,7 +153,7 @@ void timer0() interrupt interrupt_timer_0_overflow
 	// 设置一个每3s的操作
 	if(++timer0_count >= 60)		
 		{
-		
+			
 		// 每个3s做一次电量检测，并进行相关的电量提示
 		ADC_check_result = GetADCResult(6);
 		
@@ -164,38 +174,31 @@ void timer0() interrupt interrupt_timer_0_overflow
 		// 将计数清0
 		timer0_count = 0;
 		}
-
-	if(Mode_detect == 0)
-		{
-		stolen_alarm_flag = 0;
-		raised_alarm_flag = 0;
-		fell_alarm_flag = 0;
-		Host_battery_high_flag = 0;
-		battery_stolen_EN = 0;
-		wire_broken_EN = 0;
 		
-		Mode_detect_count++;
-						
-		if(Mode_detect_count >= 60)
-			{
-			Moto_Vibration();          			
-			ComMode_Data(ComMode_8, 28);
-			Mode_detect_count = 61;
-			}
-		}
-	else
+	if(press_open_button == 0)
 		{
-		if(Mode_select == 1)
-			{
-			if((Mode_detect_count >= 2)&&(Mode_detect_count < 60))
-				{
-				ComMode_Data(ComMode_7, 28);				
-				}
-			}
-		Mode_detect_count = 0;
+		transceiver_power_enable = 0;
+		RXD = 1;
+		ComMode_Data(ComMode_7, 27);		
+		}
+	
+	if(press_close_button == 0)
+		{
+		transceiver_power_enable = 0;
+		RXD = 1;
+		ComMode_Data(ComMode_8, 27);
 		}
 
-
+	if(toggle_button == 1)
+		{
+		transceiver_power_enable = 1;
+		receiver_EN = 0;
+		transmiter_EN = 0;
+		RXD = 0;
+		TXD = 0;
+		idle_EN = 1;
+		}
+			
  	// 主机被盗报警
 	if(stolen_alarm_flag == 1)		
 		{
@@ -209,7 +212,7 @@ void timer0() interrupt interrupt_timer_0_overflow
 			}
 		else
 			{
-			if(stolen_alarm_count >= 1200)
+			if(stolen_alarm_count >= 120)
 				{
 				stolen_alarm_count = 0;
 				stolen_alarm_flag = 0;
@@ -250,15 +253,6 @@ void timer0() interrupt interrupt_timer_0_overflow
 		{
 		wire_broken_speech();
 		wire_broken_EN = 0;
-		}
-
-	if((receiver_EN == 0)&&(Mode_select == 1))
-		{
-		if(++receiver_EN_count > 200)
-			{
-			receiver_EN_count = 0;
-			powersave_enable = 1;
-			}
 		}
 	}
 
@@ -314,21 +308,21 @@ void timerT1() interrupt interrupt_timer_1_overflow
 				{
 				raised_alarm_flag=1;
 
-				stolen_alarm_count=0;//清报警计数器
-				stolen_alarm_flag=0;//清报警标志
-				fell_alarm_count=0;//清报警计数器
-				fell_alarm_flag=0;//清报警标志
+				stolen_alarm_count=0;
+				stolen_alarm_flag=0;
+				fell_alarm_count=0;
+				fell_alarm_flag=0;
 				}
 			break;
 
-			case ComMode_5://留作倒地信号使用
+			case ComMode_5:
 				{
-				fell_alarm_flag=1;	//倒地报警
+				fell_alarm_flag=1;	
 
-				stolen_alarm_count=0;//清报警计数器
-				stolen_alarm_flag=0;//清报警标志
-				raised_alarm_count=0;//清报警计数器
-				raised_alarm_flag=0;//清报警标志
+				stolen_alarm_count=0;
+				stolen_alarm_flag=0;
+				raised_alarm_count=0;
+				raised_alarm_flag=0;
 				}
 			break;
 
@@ -342,7 +336,6 @@ void timerT1() interrupt interrupt_timer_1_overflow
 			case ComMode_7:
 				{
 				lock_rotated_on_speech();
-				powersave_enable = 1;
 				}
 			break;
 
@@ -356,7 +349,6 @@ void timerT1() interrupt interrupt_timer_1_overflow
 			case ComMode_9:
 				{
 				lock_rotated_off_speech();
-				powersave_enable = 1;
 				}
 			break;
 
@@ -364,7 +356,6 @@ void timerT1() interrupt interrupt_timer_1_overflow
 				{
 				Moto_Vibration();          			
 				Mode_select = 1;
-				powersave_enable = 1;
 				}
 			break;
 			}
@@ -378,12 +369,8 @@ void timerT1() interrupt interrupt_timer_1_overflow
 void KBI_ISR(void) interrupt 7
 	{
 	EKB = 0;
-	KBIF &= 0xe0;
-	if(Mode_select == 0)
-		{
-		receiver_EN = 0;
-		receiver_EN_count = 0;
-		}
+	KBIF &= 0xfc;
+	EKB = 1;
 	}
 		
 /*---------------------------------------------------

@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   DELAY                                                                 09/04/2014 10:05:24 PAGE 1   
+C51 COMPILER V9.51   DELAY                                                                 09/30/2014 11:22:46 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE DELAY
@@ -62,7 +62,7 @@ line level    source
   52          
   53          /*--------------------------------------------------
   54                  delay_us()
-C51 COMPILER V9.51   DELAY                                                                 09/04/2014 10:05:24 PAGE 2   
+C51 COMPILER V9.51   DELAY                                                                 09/30/2014 11:22:46 PAGE 2   
 
   55                  
   56                  延迟约为1us的子程序

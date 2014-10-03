@@ -131,7 +131,7 @@ void host_2ndtouch_speech(void)
 	SC_Speech(27);  
 	Delay(140);
 	voice_EN = 0;
-	Delay(40);
+//	Delay(10);
 	}
 	
 /*----------------------------------------------------
@@ -160,10 +160,10 @@ void stolen_alarm_speech1(void)
 	}
 
 /*----------------------------------------------------
-	slave_nearby_speech()
+	open_lock_speech()
 	附机在主机附近，通过认证后，语音提示
 -----------------------------------------------------*/
-void slave_nearby_speech(void)
+void open_lock_speech(void)
 	{
 	voice_EN=1;
 	SC_Speech(23); 
@@ -172,16 +172,16 @@ void slave_nearby_speech(void)
 	}
 
 /*----------------------------------------------------
-	slave_away_speech()
+	close_lock_speech()
 	判断附机离开，语音提示
 -----------------------------------------------------*/
-void slave_away_speech(void)
+void close_lock_speech(void)
 	{
 	voice_EN = 1;
 	SC_Speech(24);  
 	Delay(60);
 	SC_Speech(13);
-	Delay(80);
+	Delay(70);
 	voice_EN = 0;
 	}
 
@@ -240,7 +240,7 @@ void Battery_low_alarm_speech(void)
 void Battery_high_alarm_speech(void)
 	{
 	voice_EN = 1;
-	SC_Speech(17);
+	SC_Speech(14);
 	Delay(120);
 	voice_EN = 0;
 	}

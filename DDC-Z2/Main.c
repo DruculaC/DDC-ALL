@@ -81,6 +81,9 @@ tWord wheeled_count = 0;
 
 void main()
 	{
+	voice_EN=0;		//将功放关闭
+	noVoice();
+	
 	InitUART();
 	InitT0(1);
 	TI = 0;
@@ -92,10 +95,6 @@ void main()
 
 	sensor_EN = 0;
  	position_sensor_EN = 0;
-
-	noVoice();
-
-	voice_EN=0;		//将功放关闭
 
 	raised_sensor_detect=1;
 	fell_sensor_detect=1;
@@ -117,10 +116,9 @@ void main()
 	
 	transmiter_power = 1; 
    
-	vibration_flag = 1;
-	
 	// lock the external motor, 防止锁还没完全打开的时候，车手加电导致轮子与锁的告诉碰撞。 
 	motor_lock = 1;
+	TR0 = 1;
 	
 	while(1)
 		{
@@ -226,28 +224,19 @@ void timer0() interrupt interrupt_timer_0_overflow
 			}
 		}
 		
-	if(vibration_flag == 1)
-		{
-		if(++vibration_count >= 2000)
-			{
-			vibration_flag = 0;
-			vibration_count = 0;
-			}
-		}
 
 	// detect whether key is rotated on,  
 	if((key_rotate == 1)&&(key_rotated_on_flag == 0)&&(IDkey_flag == 1))		
-//	if((key_rotate == 1)&&(key_rotated_on_flag == 0))		
 		{
 		Delay(5);
 		// anti-trigger, Delay(5) confirm the key rotation.
 		if(key_rotate == 1)
 			{
 			// turn on the magnet
-			if(battery_stolen_EN = 1)
-				magnet_CW(2000, 5000, 42);
+			if(battery_stolen_EN == 1)
+				magnet_CW(2000, 5100, 42);
             else
-				magnet_CW(2000, 5000, 42);
+				magnet_CW(2000, 5100, 42);
 			slave_nearby_operation();
 			// flag key rotation status
 			key_rotated_on_flag = 1;
@@ -271,9 +260,9 @@ void timer0() interrupt interrupt_timer_0_overflow
 				key_rotated_on_flag=0;
 				// turn off the magnet 
 				if(battery_stolen_EN == 1)
-					magnet_ACW(2000, 12000);
+					magnet_ACW(2000, 7100);
 				else
-					magnet_ACW(2000, 10000);
+					magnet_ACW(2000, 7100);
 					
 				slave_away_operation();
 				}				
@@ -284,6 +273,14 @@ void timer0() interrupt interrupt_timer_0_overflow
 		{
 		vibration_flag = 1;
 		vibration_count = 0;
+		}
+    if(vibration_flag == 1)
+		{
+		if(++vibration_count >= 2000)
+			{
+			vibration_flag = 0;
+			vibration_count = 0;
+			}
 		}
 
 	if(wheeled_rotate == 1)

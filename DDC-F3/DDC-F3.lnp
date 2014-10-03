@@ -10,3 +10,4 @@
 ".\UART.obj",
 ".\voice.obj" 
 TO "DDC-F3" 
+RAMSIZE(256) 

@@ -50,7 +50,7 @@ extern tByte enable_sensor_delay_count;
 void slave_away_operation(void)
 	{
 	// speech for slave away
-	slave_away_speech();	
+	close_lock_speech();	
 	
 	// enable_sensor();	
 	enable_sensor_delayEN = 1;
@@ -68,7 +68,7 @@ void slave_nearby_operation(void)
 
 
 	// speech for slave nearby
-	slave_nearby_speech();
+	open_lock_speech();
 	// handle with battery status 
 	verifybattery(ADC_check_result);					
 	// rotate on speech

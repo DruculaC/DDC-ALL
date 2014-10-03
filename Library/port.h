@@ -9,6 +9,10 @@
 
 #include "main.h"
 
+/*----------------------------------------------------
+	主机端口定义
+-----------------------------------------------------*/
+
 // P2.5，PIN16，连接到钥匙转动，钥匙转开时，此pin为1；钥匙关闭时，此pin为0
 sbit key_rotate = P2^5;			
 
@@ -21,9 +25,6 @@ sbit transmiter_EN = P2^7;
 
 // P0.0, PIN3, horizontal sensor input
 sbit sensor_detect = P0^0;
-
-// P0.0, PIN3, 作为附机使用时，探测模式选择按钮的状态 
-sbit Mode_detect = P0^0;
 
 // P2.2，P2.3，分别为PIN13，PIN14，电磁铁,  平时值为00，开锁用10，关锁有01，然后都恢复到00
 sbit MagentControl_1 = P2^2;
@@ -77,6 +78,22 @@ sbit transmit_wire = P1^0;
 
 // P0.6, PIN20, 电量输入
 sbit battery_input = P0^6;
+
+/*----------------------------------------------------
+	附机端口定义
+-----------------------------------------------------*/
+// P2.6, PIN27, 拨动开关输入
+sbit toggle_button = P2^6;
+
+// P0.1, PIN26, 关锁按钮
+sbit press_close_button = P0^1;
+
+// P0.0, PIN3, 开锁按钮
+sbit press_open_button = P0^0;
+
+// P0.2, PIN25, 无线模块电源控制
+sbit transceiver_power_enable = P0^2;
+
 #endif
 											
 /*---------------------------------------------------

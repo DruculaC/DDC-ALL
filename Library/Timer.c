@@ -72,7 +72,7 @@ void InitT0(const tByte Tick_ms_T0)
 	timer0_8H = (tByte) (timer0_16 / 256);
 	timer0_8L = (tByte) (timer0_16 % 256);
 	TMOD = 0x21;
-	TR0=1;
+	TR0=0;
 }
 
 /*---------------------------------------------------------------------

@@ -83,7 +83,10 @@ bit key_rotate_flag = 0;
 bit lock_rotate_on_flag = 1;
 bit lock_rotate_off_flag = 0;
 bit slave_away_flag = 1;
-bit Auto_Mode = 1;		//自动开关锁模式打开，每次收到ComMode_8时，手动和自动切换
+bit magnet_CW_flag = 0;
+bit open_lock_EN = 0;
+bit close_lock_EN = 0;
+bit recovery_from_alarm = 0;
 
 void main()
 	{
@@ -115,8 +118,6 @@ void main()
 	
     horizontal_sensor = 1;
 	
-	ComMode_Data(ComMode_8, 28);
-
 	// turn off transmitter, turn on receiver
 	transmiter_EN = 1;
 	receiver_EN = 0;
@@ -126,15 +127,14 @@ void main()
 	MagentControl_2 = 1;
 
 	transmiter_power = 1; 
-   
+	
 	wire_broken = 1;
 	TR0 = 1;
 	
 	// lock the external motor, 防止锁还没完全打开的时候，车手加电导致轮子与锁的告诉碰撞。 
 	motor_lock = 1;
 	while(1)
-		{        
-		
+		{        		
 		// 判断传感器是否在振动
 		if((sensor_detect == 0)||(horizontal_sensor == 0))
 			{
@@ -161,6 +161,7 @@ void timer0() interrupt interrupt_timer_0_overflow
 		// reset timer0 ticket counter every 2s
 		timer0_count=0;
 
+/*
 		if(++key_rotate_count < 16)		
 			{
 			if((key_rotated_on_flag == 1)||(key_rotated_off_flag == 1))
@@ -179,6 +180,7 @@ void timer0() interrupt interrupt_timer_0_overflow
 				slave_away_flag = 1;
 				}			
 			}
+*/
 		// detect the battery voltage
 		ADC_check_result = GetADCResult(6);	
 		
@@ -186,20 +188,26 @@ void timer0() interrupt interrupt_timer_0_overflow
 		// if fell and raised flag is 1, send alarm signal every 2s.
 		if((fell_flag==1)&&(fell_alarm_count<5))
 			{
+			transmiter_power = 0;
 			ComMode_Data(ComMode_5, 28);
+			transmiter_power = 1;
 			fell_alarm_count++;
 			}
 		if((raised_flag==1)&&(raised_alarm_count<5))		
 			{
+			transmiter_power = 0;
 			ComMode_Data(ComMode_4, 28);
+			transmiter_power = 1;
 			raised_alarm_count++;
 			}
 			
-		if((battery_stolen_EN == 1)&&(battery_stolen_count < 4)&&(Auto_Mode == 1))
+		if((battery_stolen_EN == 1)&&(battery_stolen_count < 4))
 			{
 			if(key_rotate == 0)
 				{
+				transmiter_power = 0;
 				ComMode_Data(ComMode_2, 28);
+				transmiter_power = 1;
 				battery_stolen_speech();
 				battery_stolen_count++;
 				}
@@ -219,7 +227,7 @@ void timer0() interrupt interrupt_timer_0_overflow
 			}
 */
 									
-		if((enable_sensor_delayEN == 1)&&(key_rotate == 0))
+		if(enable_sensor_delayEN == 1)
 			{
 			if(++enable_sensor_delay_count >= 5)
 				{
@@ -235,6 +243,7 @@ void timer0() interrupt interrupt_timer_0_overflow
 			stolen_alarm_flag = 1;
 			if(key_rotate == 0)
 				{
+				transmiter_power = 0;
 				if(wire_broken_flag == 0)
 					{
 					ComMode_Data(ComMode_3, 28);                                                                  
@@ -243,6 +252,7 @@ void timer0() interrupt interrupt_timer_0_overflow
 					{                                                                     
 					ComMode_Data(ComMode_6, 28);
 					}
+				transmiter_power = 1;
 					
 				stolen_alarm_speech1();
 				}
@@ -259,6 +269,7 @@ void timer0() interrupt interrupt_timer_0_overflow
 			stolen_alarm_flag = 1;
 			if(key_rotate == 0)
 				{
+				transmiter_power = 0;
 				if(wire_broken_flag == 0)
 					{
 					ComMode_Data(ComMode_3, 28);
@@ -267,6 +278,7 @@ void timer0() interrupt interrupt_timer_0_overflow
 					{
 					ComMode_Data(ComMode_6, 28);
 					}
+				transmiter_power = 1;
 				stolen_alarm_speech2();
 				}
 			if(++host_stolen_alarm2_count >= 4)
@@ -279,7 +291,7 @@ void timer0() interrupt interrupt_timer_0_overflow
 			}			
 		}
 	
-	if((key_rotate == 1)&&(key_rotated_on_flag == 0)&&(Auto_Mode == 1))
+	if((key_rotate == 1)&&(key_rotated_on_flag == 0))
 		{		
 		Delay(5);
 		if(key_rotate == 1)
@@ -294,8 +306,24 @@ void timer0() interrupt interrupt_timer_0_overflow
 			}
 		}
 		
+	if(open_lock_EN == 1)
+		{
+		if((magnet_CW_flag == 0)&&(stolen_alarm_flag == 0))
+			{
+			magnet_CW(1000, 5500, 28);
+			magnet_CW_flag = 1;			
+			slave_nearby_operation();
+			}
+		if(stolen_alarm_flag == 1)
+			{
+			recovery_from_alarm = 1;
+			}
+		open_lock_EN = 0;
+		disable_sensor();
+		}
+/*		
 	// detect whether key is rotated on,  
-	if((key_rotated_on_flag == 1)&&(IDkey_flag == 1)&&(lock_rotate_on_flag == 0)&&(Auto_Mode == 1))		
+	if((key_rotated_on_flag == 1)&&(IDkey_flag == 1)&&(lock_rotate_on_flag == 0))		
 		{                                                                        
 		magnet_CW(2000, 4000, 28);
 		
@@ -305,8 +333,8 @@ void timer0() interrupt interrupt_timer_0_overflow
 		lock_rotate_on_flag = 1;
 		key_rotate_count = 31;
 		}
-		
-	if((key_rotate == 0)&&(key_rotated_off_flag == 0)&&(Auto_Mode == 1))
+*/		
+	if((key_rotate == 0)&&(key_rotated_off_flag == 0)&&(vibration_flag == 0)&&(wheeled_flag == 0))
 		{
 		Delay(5);
 		if(key_rotate == 0)
@@ -315,12 +343,34 @@ void timer0() interrupt interrupt_timer_0_overflow
 			key_rotated_on_flag = 0;
 			key_rotated_off_flag = 1;
 			lock_rotate_off_flag = 0;
+			// enable_sensor();	
+			enable_sensor_delayEN = 1;
+			enable_sensor_delay_count = 0;
 
 			key_rotate_count = 10;
 			}		
 		}
-
-	if((key_rotated_off_flag == 1)&&(slave_away_flag == 1)&&(lock_rotate_off_flag == 0)&&(Auto_Mode == 1))
+		
+	if(close_lock_EN == 1)
+		{
+		if((magnet_CW_flag == 1)&&(vibration_flag == 0)&&(wheeled_flag == 0))
+			{
+			verifybattery(ADC_check_result);
+			magnet_ACW(1000, 3000);			
+			magnet_CW_flag = 0;
+			slave_away_operation();
+			}
+		if(recovery_from_alarm == 1)
+			{
+			recovery_from_alarm = 0;
+			// enable_sensor();	
+			enable_sensor_delayEN = 1;
+			enable_sensor_delay_count = 0;			
+			}
+		close_lock_EN = 0;
+		}
+/*
+	if((key_rotated_off_flag == 1)&&(slave_away_flag == 1)&&(lock_rotate_off_flag == 0))
 		{
 		if((vibration_flag == 0)&&(wheeled_flag == 0))
 			{
@@ -337,7 +387,7 @@ void timer0() interrupt interrupt_timer_0_overflow
 			IDkey_flag = 0;
 			}
 		}
-	
+*/	
 	if((sensor_detect == 0)||(horizontal_sensor == 0))
 		{
 		vibration_flag = 1;
@@ -673,51 +723,15 @@ void timerT1() interrupt interrupt_timer_1_overflow
 			
 			case ComMode_7:
 				{
-				if(Auto_Mode == 0)
-					{
-					if((motor_lock == 0)&&(vibration_flag == 0)&&(wheeled_flag == 0))
-						{
-						if(battery_stolen_EN == 1)
-							{
-							magnet_ACW(6000, 20000);							
-							}
-						else
-							magnet_ACW(6000, 10000);
-						enable_sensor_delayEN = 1;
-						ComMode_Data(ComMode_9, 42);										
-						}
-					else if(motor_lock == 1)
-						{
-						if(battery_stolen_EN == 1)
-							{
-							magnet_CW(2000, 5000, 42);							
-							}
-						else
-							magnet_CW(2000, 4000, 42);
-						enable_sensor_delayEN = 0;
-						disable_sensor();
-						ComMode_Data(ComMode_7, 42);
-						}					
-					}
+				open_lock_EN = 1;
 				}
 			break;
-			
+
 			case ComMode_8:
 				{
-				if(Auto_Mode == 0)
-					{
-					ComMode_Data(ComMode_8, 42);				
-					Auto_Mode = 1;
-					slave_away_flag = 1;
-					key_rotated_off_flag = 0;
-					}
-				else
-					{
-					ComMode_Data(ComMode_10, 42);				
-					Auto_Mode = 0;					
-					}
+				close_lock_EN = 1;
 				}
-			break;			
+			break;
 			}
 		}
 	}

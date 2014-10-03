@@ -174,19 +174,15 @@ void timer0() interrupt interrupt_timer_0_overflow
 		else
 			key_rotate_count = 31;
 			
-//		if(lock_rotate_off_flag == 0)
-//			{
-			if(++IDkey_count > 4)
+		if(++IDkey_count > 4)
+			{
+			IDkey_count = 8;
+			slave_away_flag = 1;
+			if((enable_sensor_delayEN == 0)&&(lock_rotate_off_flag == 1))
 				{
-				IDkey_count = 8;
-				slave_away_flag = 1;
-				if((enable_sensor_delayEN == 0)&&(lock_rotate_off_flag == 1))
-					{
-					enable_sensor_delayEN = 1;
-					enable_sensor_delay_count = 0;
-					}
-				}			
-//			}
+				enable_sensor_delayEN = 1;
+				}
+			}			
 									
 		if((enable_sensor_delayEN == 1)&&(lock_rotate_off_flag == 1))
 			{
@@ -197,13 +193,12 @@ void timer0() interrupt interrupt_timer_0_overflow
 				enable_sensor();
 				}
 			}
-		
-			
+					
 		// whether host has been touched 3 times, if yes, then alarm 2 speech alternantively.
 		if((host_stolen_alarm1_EN == 1)&&(host_stolen_alarm1_count < 4))
 			{
 			stolen_alarm_flag = 1;
-			if(key_rotate == 0)
+			if(lock_rotate_off_flag == 1)
 				{
 				stolen_alarm_speech1();
 				}
@@ -218,7 +213,7 @@ void timer0() interrupt interrupt_timer_0_overflow
 		if((host_stolen_alarm2_EN == 1)&&(host_stolen_alarm2_count < 4))
 			{
 			stolen_alarm_flag = 1;
-			if(key_rotate == 0)
+			if(lock_rotate_off_flag == 1)
 				{
 				stolen_alarm_speech2();
 				}
@@ -244,7 +239,7 @@ void timer0() interrupt interrupt_timer_0_overflow
 			IDkey_flag = 0;
 			slave_away_flag = 0;
 			key_rotate_count = 31;			
-			disable_sensor();	
+			disable_sensor();					
 			}
 		}
 		
@@ -258,8 +253,7 @@ void timer0() interrupt interrupt_timer_0_overflow
 		slave_nearby_operation();                     
 		lock_rotate_on_flag = 1;
 		lock_rotate_off_flag = 0;
-		key_rotate_count = 31;
-		
+		key_rotate_count = 31;		
 		}
 		
 	if((key_rotate == 0)&&(key_rotated_off_flag == 0)&&(Auto_Mode == 1))

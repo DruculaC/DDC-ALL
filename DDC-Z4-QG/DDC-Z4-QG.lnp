@@ -9,3 +9,4 @@
 ".\Timer.obj",
 "Main.obj" 
 TO "DDC-Z4-QG" 
+RAMSIZE(256) 

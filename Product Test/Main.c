@@ -104,7 +104,7 @@ void main()
 	
 	// 初始化完毕后，开始测试程序
 	test_flag = 1;
-	
+	TR0 = 1;
 		
 	while(1)
 		{        
@@ -124,7 +124,7 @@ void timer0() interrupt interrupt_timer_0_overflow
 	TL0 = timer0_8L;
 	
 	// timer0 is 1ms ticket, count the time flow of timer0, then operate every 2s.
-	if(++timer0_count >= 10000)
+	if(++timer0_count >= 3000)
 		{
 		// reset timer0 ticket counter every 2s
 		timer0_count=0;
@@ -132,51 +132,23 @@ void timer0() interrupt interrupt_timer_0_overflow
 		if(test_flag == 1)
 			{
 			// 开锁
-			magnet_CW();
+			magnet_CW(2000, 5100, 42);
 			Delay(40);
 
 			// 发报警信号出去
-			ComMode_3_Data();
-
-			// 每隔3s播放语音，测试音频信号
-			Product_Test_Voice();
-
+			ComMode_Data(ComMode_3, 28);
 			// 检测ADC的电压值
 			ADC_check_result = GetADCResult(6);	
 			
 			// 发报警信号出去
-			ComMode_3_Data();
-			
-			// 播报电量值
-			verifybattery(ADC_check_result);					
-
-			Delay(40);
-			// 关锁
-			magnet_ACW();
+			ComMode_Data(ComMode_3, 28);			// 关锁
+			magnet_ACW(2000, 7100);
 			Delay(40);
 			// 发报警信号出去
-			ComMode_3_Data();
-			}
+			ComMode_Data(ComMode_3, 28);			}
 		}
 
-	
-	// 检测ID认证通过，同时钥匙打开后的操作，播报语音。
-	if((key_rotate == 1)&&(key_rotated_on_flag == 0)&&(IDkey_flag == 1))		
-		{                                                                        
-		Delay(5);
-		// anti-trigger, Delay(5) confirm the key rotation.
-		if(key_rotate == 1)
-			{
-            // speech for slave nearby
-			slave_nearby_speech();
-
-			key_rotated_on_flag = 1;
-			
-			IDkey_count = 0;
-			IDkey_flag = 0;				
-			}
-		}
-		
+/*	
 	// 关钥匙的操作，检测是否有轮子在转动
 	if((key_rotate == 0)&&(key_rotated_on_flag == 1))
 		{
@@ -209,16 +181,6 @@ void timer0() interrupt interrupt_timer_0_overflow
             }
 		}
 
-	// 测试振动传感器
-	if((sensor_detect == 0)||(horizontal_sensor == 0))
-		{
-		if(++sensor_1ststage_count >= 2)			
-			{
-			sensor_1ststage_count=0;
-			
-			host_touch_speech();
-			}
-		}
 								
 	// 拿掉锁，模拟有人剪断锁线，播报语音
 	if(wire_broken == 0) 
@@ -232,7 +194,7 @@ void timer0() interrupt interrupt_timer_0_overflow
 		stolen_alarm_speech2();
 		}
 
-/*			
+			
 	// 测试在有电平的情况下，拿掉48V电源，模拟有人偷电瓶的情况，播报语音
 	if(ADC_check_result < 0x2c1)
 		{

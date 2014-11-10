@@ -95,6 +95,7 @@ void Send_Data(tByte x)
 void ComMode_Data(tByte ComMode, x)	
 	{
 	receiver_EN = 1;
+	Delay(20);
 	transmiter_EN = 0;
 	myTxRxData[0] = CmdHead;
 	myTxRxData[1] = MyAddress;

@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   OPERATION                                                             08/05/2014 16:43:51 PAGE 1   
+C51 COMPILER V9.51   OPERATION                                                             11/05/2014 11:39:35 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE OPERATION
@@ -44,66 +44,58 @@ line level    source
   34          extern tWord sensor_3rdstage_interval;          
   35          extern tWord sensor_2ndstage_time;              
   36          extern tByte sensor_2ndstage_count;             
-  37          extern tByte nearby_away_interval;              
-  38          extern tWord ADC_check_result;          
-  39          extern tByte wire_broken_count;         
-  40          extern bit wire_broken_flag;                    
-  41          extern bit battery_stolen_EN;                   
-  42          extern tByte battery_stolen_count;
-  43          extern bit sensor_3rdalarm_flag;
-  44          extern tByte enable_sensor_delay_count;         
-  45          
-  46          /*-----------------------------------------
-  47                  slave_away_operation()
-  48                  
-  49                  operation for slave is away
-  50          ------------------------------------------*/
-  51          void slave_away_operation(void)
-  52                  {
-  53   1              // turn off the magnet 
-  54   1              magnet_ACW();
-C51 COMPILER V9.51   OPERATION                                                             08/05/2014 16:43:51 PAGE 2   
+  37          extern tWord ADC_check_result;          
+  38          extern tByte wire_broken_count;         
+  39          extern bit wire_broken_flag;                    
+  40          extern bit battery_stolen_EN;                   
+  41          extern tByte battery_stolen_count;
+  42          extern bit sensor_3rdalarm_flag;
+  43          extern tByte enable_sensor_delay_count;         
+  44          
+  45          /*-----------------------------------------
+  46                  slave_away_operation()
+  47                  
+  48                  operation for slave is away
+  49          ------------------------------------------*/
+  50          void slave_away_operation(void)
+  51                  {
+  52   1              // speech for slave away
+  53   1              close_lock_speech();    
+  54   1              
+C51 COMPILER V9.51   OPERATION                                                             11/05/2014 11:39:35 PAGE 2   
 
-  55   1              
-  56   1              // speech for slave away
-  57   1              slave_away_speech();    
-  58   1              
-  59   1              // enable_sensor();     
-  60   1              enable_sensor_delayEN = 1;
-  61   1              enable_sensor_delay_count = 0;
-  62   1      
-  63   1              // delay time, avoid sensor trigger on.
-  64   1              Delay(20);
-  65   1              }
-  66          
-  67          /*----------------------------------------------------------------------
-  68                          slave_nearby_operation()
-  69                          operation for slave is nearby
-  70          ----------------------------------------------------------------------*/
-  71          void slave_nearby_operation(void)
-  72                  {
-  73   1      
-  74   1              // turn on the magnet
-  75   1              magnet_CW();
-  76   1      
-  77   1              // speech for slave nearby
-  78   1              slave_nearby_speech();
-  79   1              // handle with battery status 
-  80   1              verifybattery(ADC_check_result);                                        
-  81   1              // rotate on speech
-  82   1              key_rotate_on_speech();
-  83   1              nearby_away_interval = 0;
-  84   1              
-  85   1              disable_sensor();
-  86   1              }
-  87                  
-  88          /*---------------------------------------------------
-  89                  end of file
-  90          ----------------------------------------------------*/
+  55   1              // enable_sensor();     
+  56   1              enable_sensor_delayEN = 1;
+  57   1              enable_sensor_delay_count = 0;
+  58   1              // delay time, avoid sensor trigger on.
+  59   1              Delay(20);
+  60   1              }
+  61          
+  62          /*----------------------------------------------------------------------
+  63                          slave_nearby_operation()
+  64                          operation for slave is nearby
+  65          ----------------------------------------------------------------------*/
+  66          void slave_nearby_operation(void)
+  67                  {
+  68   1      
+  69   1      
+  70   1              // speech for slave nearby
+  71   1              open_lock_speech();
+  72   1              // handle with battery status 
+  73   1              verifybattery(ADC_check_result);                                        
+  74   1              // rotate on speech
+  75   1              key_rotate_on_speech();
+  76   1              
+  77   1              disable_sensor();
+  78   1              }
+  79                  
+  80          /*---------------------------------------------------
+  81                  end of file
+  82          ----------------------------------------------------*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     39    ----
+   CODE SIZE        =     29    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

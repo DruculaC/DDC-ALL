@@ -58,8 +58,8 @@ tByte fell_wire_time=0;          //倒地检测线，检测低电平的时间
 tByte raise_wire_time=0;			//抬起检测线，检测低电平的时间
 tWord raised_fell_number = 0;				//倒地或者抬起出发后，计数，到达一定数值后，将其与标志位一起清零。
 bit raised_fell_once_flag = 0;			//raised_fell_flag是否曾经标志过，如果标志过则置1.然后主机被恢复倒地或者恢复抬起时，此标志位复位。
-tByte key_rotated_on_flag=1;			//电动车开启标志位，1表示电动车开启了，0表示电动车关闭了
-tByte key_rotated_off_flag=0;			//电动车关闭标志位，1表示电动车开启了，0表示电动车关闭了
+tByte key_rotated_on_flag = 1;			//电动车开启标志位，1表示电动车开启了，0表示电动车关闭了
+tByte key_rotated_off_flag = 0;			//电动车关闭标志位，1表示电动车开启了，0表示电动车关闭了
 tWord ADC_check_result = 0;		//作为AD检测值
 tByte wire_broken_count = 0;		// 作为断线后的时间检测
 bit battery_stolen_EN = 0;			// 作为电池被盗的使能端
@@ -83,7 +83,7 @@ bit key_rotate_flag = 0;
 bit lock_rotate_on_flag = 1;
 bit lock_rotate_off_flag = 0;
 bit slave_away_flag = 1;
-bit magnet_CW_flag = 0;
+bit magnet_CW_flag = 1;
 bit open_lock_EN = 0;
 bit close_lock_EN = 0;
 bit recovery_from_alarm = 0;
@@ -310,7 +310,7 @@ void timer0() interrupt interrupt_timer_0_overflow
 		{
 		if((magnet_CW_flag == 0)&&(stolen_alarm_flag == 0))
 			{
-			magnet_CW(1000, 5500, 28);
+			magnet_CW(1000, 3200, 28);
 			magnet_CW_flag = 1;			
 			slave_nearby_operation();
 			}
@@ -356,7 +356,7 @@ void timer0() interrupt interrupt_timer_0_overflow
 		if((magnet_CW_flag == 1)&&(vibration_flag == 0)&&(wheeled_flag == 0))
 			{
 			verifybattery(ADC_check_result);
-			magnet_ACW(1000, 3000);			
+			magnet_ACW(1000, 4000);			
 			magnet_CW_flag = 0;
 			slave_away_operation();
 			}

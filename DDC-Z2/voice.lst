@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   VOICE                                                                 09/29/2014 09:39:50 PAGE 1   
+C51 COMPILER V9.51   VOICE                                                                 11/10/2014 11:41:04 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE VOICE
@@ -62,7 +62,7 @@ line level    source
   52                  key_rotate_on_speech()
   53                  钥匙旋转至ON后，语音提示
   54          -----------------------------------------------------*/
-C51 COMPILER V9.51   VOICE                                                                 09/29/2014 09:39:50 PAGE 2   
+C51 COMPILER V9.51   VOICE                                                                 11/10/2014 11:41:04 PAGE 2   
 
   55          void key_rotate_on_speech(void)
   56                  {
@@ -71,8 +71,8 @@ line level    source
   59   2                      case 1:
   60   2                              {
   61   3                              voice_EN = 1;
-  62   3                              SC_Speech(17);  
-  63   3                              Delay(40);
+  62   3                              SC_Speech(14);  
+  63   3                              Delay(45);
   64   3                              SC_Speech(18);  
   65   3                              Delay(50);
   66   3                              SC_Speech(11);  
@@ -85,8 +85,8 @@ line level    source
   73   2                      case 2:
   74   2                              {
   75   3                              voice_EN = 1;
-  76   3                              SC_Speech(17);  
-  77   3                              Delay(35);
+  76   3                              SC_Speech(14);  
+  77   3                              Delay(40);
   78   3                              SC_Speech(12);  
   79   3                              Delay(60);
   80   3                              voice_EN = 0;
@@ -126,7 +126,7 @@ line level    source
  114          --------------------------------------------------------*/
  115          void host_touch_speech(void)
  116                  {
-C51 COMPILER V9.51   VOICE                                                                 09/29/2014 09:39:50 PAGE 3   
+C51 COMPILER V9.51   VOICE                                                                 11/10/2014 11:41:04 PAGE 3   
 
  117   1              voice_EN = 1;
  118   1              SC_Speech(2);  
@@ -190,7 +190,7 @@ line level    source
  176                  判断附机离开，语音提示
  177          -----------------------------------------------------*/
  178          void close_lock_speech(void)
-C51 COMPILER V9.51   VOICE                                                                 09/29/2014 09:39:50 PAGE 4   
+C51 COMPILER V9.51   VOICE                                                                 11/10/2014 11:41:04 PAGE 4   
 
  179                  {
  180   1              voice_EN = 1;
@@ -254,7 +254,7 @@ line level    source
  238                  用于附机，电量高于一定值的时候，语音提示
  239          ----------------------------------------------------------------*/
  240          void Battery_high_alarm_speech(void)
-C51 COMPILER V9.51   VOICE                                                                 09/29/2014 09:39:50 PAGE 5   
+C51 COMPILER V9.51   VOICE                                                                 11/10/2014 11:41:04 PAGE 5   
 
  241                  {
  242   1              voice_EN = 1;
@@ -318,7 +318,7 @@ line level    source
  300          void battery_stolen_speech_F3(void)
  301                  {
  302   1              voice_EN = 1;
-C51 COMPILER V9.51   VOICE                                                                 09/29/2014 09:39:50 PAGE 6   
+C51 COMPILER V9.51   VOICE                                                                 11/10/2014 11:41:04 PAGE 6   
 
  303   1              SC_Speech(11);  
  304   1              Delay(50);
@@ -366,7 +366,7 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    471    ----
+   CODE SIZE        =    463    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

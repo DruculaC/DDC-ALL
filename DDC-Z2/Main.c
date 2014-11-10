@@ -81,7 +81,6 @@ tWord wheeled_count = 0;
 
 void main()
 	{
-	voice_EN=0;		//将功放关闭
 	noVoice();
 	
 	InitUART();
@@ -115,6 +114,7 @@ void main()
 	MagentControl_2 = 1;
 	
 	transmiter_power = 1; 
+	voice_EN=0;		//将功放关闭
    
 	// lock the external motor, 防止锁还没完全打开的时候，车手加电导致轮子与锁的告诉碰撞。 
 	motor_lock = 1;

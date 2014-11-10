@@ -59,8 +59,8 @@ void key_rotate_on_speech(void)
 		case 1:
 			{
 			voice_EN = 1;
-			SC_Speech(17);  
-			Delay(40);
+			SC_Speech(14);  
+			Delay(45);
 			SC_Speech(18);  
 			Delay(50);
 			SC_Speech(11);  
@@ -73,8 +73,8 @@ void key_rotate_on_speech(void)
 		case 2:
 			{
 			voice_EN = 1;
-			SC_Speech(17);  
-			Delay(35);
+			SC_Speech(14);  
+			Delay(40);
 			SC_Speech(12);  
 			Delay(60);
 			voice_EN = 0;

@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   OPERATION                                                             09/29/2014 09:39:49 PAGE 1   
+C51 COMPILER V9.51   OPERATION                                                             11/10/2014 11:41:04 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE OPERATION
@@ -62,7 +62,7 @@ line level    source
   52   1              // speech for slave away
   53   1              close_lock_speech();    
   54   1              
-C51 COMPILER V9.51   OPERATION                                                             09/29/2014 09:39:49 PAGE 2   
+C51 COMPILER V9.51   OPERATION                                                             11/10/2014 11:41:04 PAGE 2   
 
   55   1              // enable_sensor();     
   56   1              enable_sensor_delayEN = 1;
